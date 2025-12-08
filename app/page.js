@@ -25,15 +25,15 @@ const wallclock = "https://ik.imagekit.io/rajstorage2/RAJ_WATCHES_Brand_2/7Ajant
 
 export default function HomePage() {
   const brands = [
-    { name: "Tommy Hilfiger", logo: Tommylogo },
-    { name: "Kenneth Cole", logo: KennethColelogo },
-    { name: "Police", logo: Policelogo },
-    { name: "Casio", logo: Casiologo },
-    { name: "Titan", logo: Titanlogo },
-    { name: "Fastrack", logo: Fastracklogo },
-    { name: "Sonata", logo: Sonatalogo },
-    { name: "Ajanta", logo: Ajantalogo },
-    // { name: "Solar", logo: Solarlogo },
+    { name: "tommy hilfiger", logo: Tommylogo },
+    { name: "kenneth cole", logo: KennethColelogo },
+    { name: "police", logo: Policelogo },
+    { name: "casio", logo: Casiologo },
+    { name: "titan", logo: Titanlogo },
+    { name: "fastrack", logo: Fastracklogo },
+    { name: "sonata", logo: Sonatalogo },
+    { name: "ajanta", logo: Ajantalogo },
+    // { name: "solar", logo: Solarlogo },
   ];
 
   return (
@@ -57,10 +57,10 @@ export default function HomePage() {
 
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6 lg:gap-10 place-items-center">
             {brands.map((brand, idx) => (
-              <div
+              <a
                 key={brand.logo || idx}
-                className="w-full max-w-[150px] sm:max-w-[200px] lg:max-w-[260px] h-[110px] sm:h-[170px] lg:h-[220px] rounded-xl sm:rounded-2xl lg:rounded-3xl border-2 sm:border-3 lg:border-4 border-[#b89f56] bg-gradient-to-tr from-[#fefcf6] via-[#f6ecd1] to-[#e9d8a6] shadow-[0_6px_16px_rgba(184,159,86,0.15)] sm:shadow-[0_12px_32px_rgba(184,159,86,0.18)] hover:shadow-[0_16px_48px_rgba(184,159,86,0.32)] transition-transform duration-300 transform hover:scale-105 flex items-center justify-center overflow-hidden p-3 sm:p-4 lg:p-6"
-                aria-hidden="true"
+                href={`/watches/category/all?brand=${encodeURIComponent(brand.name)}`}
+                className="w-full max-w-[150px] sm:max-w-[200px] lg:max-w-[260px] h-[110px] sm:h-[170px] lg:h-[220px] rounded-xl sm:rounded-2xl lg:rounded-3xl border-2 sm:border-3 lg:border-4 border-[#b89f56] bg-gradient-to-tr from-[#fefcf6] via-[#f6ecd1] to-[#e9d8a6] shadow-[0_6px_16px_rgba(184,159,86,0.15)] sm:shadow-[0_12px_32px_rgba(184,159,86,0.18)] hover:shadow-[0_16px_48px_rgba(184,159,86,0.32)] transition-transform duration-300 transform hover:scale-105 flex items-center justify-center overflow-hidden p-3 sm:p-4 lg:p-6 cursor-pointer"
               >
                 {/* subtle overlay for depth */}
                 <div className="absolute inset-0 rounded-3xl pointer-events-none bg-gradient-to-b from-black/[0.01] to-transparent opacity-10" />
@@ -76,7 +76,7 @@ export default function HomePage() {
                     priority={false}
                   />
                 </div>
-              </div>
+              </a>
             ))}
           </div>
         </section>

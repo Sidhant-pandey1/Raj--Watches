@@ -60,7 +60,7 @@ export default function TestimonialSection() {
     }
   }
 
-  // On wide screens show 2 cards (index and next); on small screens we still render pair but CSS hides second
+  // On wide screens show 2 cards (index and next); on small screens show 1
   const visible = [reviews[index], reviews[(index + 1) % reviews.length]];
 
   const goPrev = () => {
@@ -71,94 +71,92 @@ export default function TestimonialSection() {
     stopAutoplay();
     setIndex((i) => (i + 1) % reviews.length);
   };
-  const goTo = (n) => {
-    stopAutoplay();
-    setIndex(n);
-  };
+
+  // Calculate progress percentage for the bar
+  const progressPercent = ((index + 1) / reviews.length) * 100;
 
   return (
-    <section className="testimonial-section bg-[#fcf7f3] py-10 sm:py-16 px-4 sm:px-6">
-      <div className="max-w-6xl mx-auto relative text-center">
-        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-serif font-extrabold text-[#23221d] mb-6 sm:mb-10 tracking-wide">
+    <section className="testimonial-section bg-[#fcf7f3] py-12 sm:py-16 px-4 sm:px-6">
+      <div className="max-w-5xl mx-auto text-center">
+        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-serif font-extrabold text-[#23221d] mb-8 sm:mb-12 tracking-wide">
           TESTIMONIALS
         </h2>
 
-        {/* Stage: make this the relative overflow-visible container */}
-        <div className="testimonial-stage relative flex items-center justify-center">
-          {/* Left arrow - smaller on mobile, positioned inside on mobile */}
+        {/* Main testimonial container with external arrows */}
+        <div className="relative flex items-center justify-center gap-3 sm:gap-6">
+          {/* Left Arrow - Outside cards */}
           <button
             onClick={goPrev}
             aria-label="Previous testimonial"
-            className="absolute -left-1 sm:left-0 lg:-left-6 top-1/2 -translate-y-1/2 z-20 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-white shadow-lg flex items-center justify-center hover:scale-110 transition border border-gray-100"
+            className="flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#c2ab72] shadow-lg flex items-center justify-center hover:bg-[#b89f56] hover:scale-110 transition-all duration-200"
             onFocus={stopAutoplay}
             onMouseEnter={stopAutoplay}
             onMouseLeave={startAutoplay}
           >
-            <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6 text-gray-600" />
+            <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6 text-[#232323]" />
           </button>
 
           {/* Cards container */}
-          <div className="testimonial-cards-container w-full px-12 sm:px-16 lg:px-8">
-            <div className="testimonial-cards flex gap-6 sm:gap-8 justify-center items-stretch">
+          <div className="flex-1 max-w-4xl">
+            <div className="flex gap-4 sm:gap-6 justify-center items-stretch">
               {visible.map((r, idx) => (
                 <article
                   key={r.name + idx}
-                  className={`testimonial-card bg-white rounded-2xl p-5 sm:p-6 lg:p-8 shadow-md border border-[#f0ebe3] flex-1 min-w-0 max-w-[560px] ${idx === 1 ? "hidden sm:block" : ""
+                  className={`testimonial-card bg-white rounded-2xl p-6 sm:p-8 shadow-lg border border-[#f0ebe3] flex-1 min-w-0 max-w-[500px] ${idx === 1 ? "hidden md:block" : ""
                     }`}
                 >
-                  {/* Stacked layout on mobile for better readability */}
-                  <div className="flex flex-col sm:flex-row items-start gap-3 sm:gap-5">
-                    <div className="quote-icon text-[#c2ab72] flex-shrink-0">
-                      <Quote className="w-8 h-8 sm:w-9 sm:h-9 lg:w-10 lg:h-10" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-gray-600 text-[0.9rem] sm:text-base lg:text-[1.05rem] leading-relaxed mb-5 sm:mb-6 font-normal text-left">
-                        {r.text}
-                      </p>
-                      <p className="text-right text-gray-800 font-semibold uppercase tracking-wider text-xs sm:text-sm">
-                        — {r.name}
-                      </p>
-                    </div>
+                  {/* Quote icon */}
+                  <div className="flex justify-start mb-4">
+                    <Quote className="w-8 h-8 sm:w-10 sm:h-10 text-[#c2ab72]" />
                   </div>
+
+                  {/* Testimonial text */}
+                  <p className="text-gray-600 text-sm sm:text-base lg:text-lg leading-relaxed mb-6 text-left">
+                    {r.text}
+                  </p>
+
+                  {/* Author name */}
+                  <p className="text-right text-gray-800 font-semibold uppercase tracking-wider text-xs sm:text-sm">
+                    — {r.name}
+                  </p>
                 </article>
               ))}
             </div>
           </div>
 
-          {/* Right arrow - smaller on mobile, positioned inside on mobile */}
+          {/* Right Arrow - Outside cards */}
           <button
             onClick={goNext}
             aria-label="Next testimonial"
-            className="absolute -right-1 sm:right-0 lg:-right-6 top-1/2 -translate-y-1/2 z-20 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-white shadow-lg flex items-center justify-center hover:scale-110 transition border border-gray-100"
+            className="flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#c2ab72] shadow-lg flex items-center justify-center hover:bg-[#b89f56] hover:scale-110 transition-all duration-200"
             onFocus={stopAutoplay}
             onMouseEnter={stopAutoplay}
             onMouseLeave={startAutoplay}
           >
-            <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 text-gray-600" />
+            <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 text-[#232323]" />
           </button>
         </div>
 
-        {/* Dots/pills below - clean circular dots */}
-        <nav
-          aria-label="Testimonials pagination"
-          className="mt-6 sm:mt-8 flex justify-center gap-2 sm:gap-3 items-center"
-        >
-          {reviews.map((_, idx) => (
-            <button
-              key={idx}
-              onClick={() => goTo(idx)}
-              aria-label={`Go to testimonial ${idx + 1}`}
-              className={`w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full transition-all duration-300 ${idx === index
-                  ? "bg-[#c2ab72]"
-                  : "bg-gray-300 hover:bg-gray-400"
-                }`}
+        {/* Clean pagination - progress bar with counter */}
+        <div className="mt-8 sm:mt-10 flex flex-col items-center gap-3">
+          {/* Progress Bar */}
+          <div className="w-32 sm:w-48 h-1 bg-gray-200 rounded-full overflow-hidden">
+            <div
+              className="h-full bg-[#c2ab72] rounded-full transition-all duration-500 ease-out"
+              style={{ width: `${progressPercent}%` }}
             />
-          ))}
-        </nav>
+          </div>
+
+          {/* Review counter */}
+          <p className="text-sm text-gray-500 font-medium">
+            {index + 1} / {reviews.length}
+          </p>
+        </div>
       </div>
     </section>
   );
 }
+
 
 
 

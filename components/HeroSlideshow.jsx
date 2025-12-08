@@ -11,10 +11,11 @@ const HERO_IMAGE = {
 
 export default function HeroSlideshow() {
   return (
-    <section className="relative h-[320px] sm:h-[420px] md:h-[520px] lg:h-[580px] w-full overflow-hidden">
-      {/* Banner image as background */}
+    <section className="relative h-[280px] sm:h-[420px] md:h-[520px] lg:h-[580px] w-full overflow-hidden">
+      {/* Banner image - different sizing for mobile vs desktop */}
+      {/* Mobile: contain to show full banner, Desktop: cover for full width */}
       <div
-        className="absolute inset-0 w-full h-full"
+        className="absolute inset-0 w-full h-full hidden sm:block"
         style={{
           backgroundImage: `url('${HERO_IMAGE.src}')`,
           backgroundSize: "cover",
@@ -24,14 +25,31 @@ export default function HeroSlideshow() {
         aria-label={HERO_IMAGE.alt}
         role="img"
       >
-        {/* Optional: subtle overlay for potential text contrast */}
         <div className="absolute inset-0 bg-black/10" />
       </div>
+      
+      {/* Mobile version - show full banner without cropping */}
+      <div
+        className="absolute inset-0 w-full h-full sm:hidden bg-gradient-to-b from-[#f5f0e6] to-[#e8dcc8]"
+        aria-label={HERO_IMAGE.alt}
+        role="img"
+      >
+        <div 
+          className="w-full h-full"
+          style={{
+            backgroundImage: `url('${HERO_IMAGE.src}')`,
+            backgroundSize: "contain",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+          }}
+        />
+      </div>
+      
       {/* Button positioned - centered on mobile, bottom-right on desktop */}
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 sm:left-auto sm:translate-x-0 sm:bottom-22 sm:right-74 z-10">
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 sm:left-auto sm:translate-x-0 sm:bottom-22 sm:right-74 z-10">
         <Link
           href="/watches/category/all"
-          className="inline-flex items-center justify-center px-5 py-2.5 sm:px-8 sm:py-3 rounded-full border-2 border-[#c2ab72] bg-[#c2ab72]/90 text-sm sm:text-lg font-semibold text-[#232323] shadow-lg hover:bg-[#c2ab72] transition-transform hover:scale-105"
+          className="inline-flex items-center justify-center px-5 py-2 sm:px-8 sm:py-3 rounded-full border-2 border-[#c2ab72] bg-[#c2ab72]/90 text-sm sm:text-lg font-semibold text-[#232323] shadow-lg hover:bg-[#c2ab72] transition-transform hover:scale-105"
         >
           EXPLORE NOW
           <ChevronRight className="ml-1 sm:ml-2 w-4 h-4 sm:w-5 sm:h-5" />

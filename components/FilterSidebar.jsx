@@ -4,18 +4,18 @@ import React, { useEffect } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 
 const availableBrands = [
-  "Tommy Hilfiger",
-  "Kenneth Cole",
-  "Police",
-  "Casio",
-  "Titan",
-  "Fastrack",
-  "Sonata",
-  "Ajanta",
-  "Solar",
+  "tommy hilfiger",
+  "kenneth cole",
+  "police",
+  "casio",
+  "titan",
+  "fastrack",
+  "sonata",
+  "ajanta",
+  "solar",
 ];
 
-const wallclockBrands = ["Ajanta", "Titan", "Solar"];
+const wallclockBrands = ["ajanta", "titan", "solar"];
 
 const availableCollections = [
   { label: "Men", value: "Guys Watch" },

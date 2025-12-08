@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import FilterSidebar from "@/components/FilterSidebar";
 import BackButton from "@/components/BackButton";
 
@@ -37,6 +37,7 @@ const PriceDisplay = ({ price }) => {
 
 export default function CategoryPage() {
   const params = useParams();
+  const searchParams = useSearchParams();
   const [slug, setSlug] = useState("");
   const [filters, setFilters] = useState({
     brands: [],
@@ -55,6 +56,18 @@ export default function CategoryPage() {
   useEffect(() => {
     setSlug(params?.slug || "all");
   }, [params]);
+
+  // Handle brand from URL query params (e.g., ?brand=Titan)
+  useEffect(() => {
+    const brandFromUrl = searchParams?.get("brand");
+    if (brandFromUrl && !filters.brands.includes(brandFromUrl)) {
+      setFilters((prev) => ({
+        ...prev,
+        brands: [...prev.brands, brandFromUrl],
+      }));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   const fetchWatches = async () => {
     if (!slug) return;
