@@ -13,17 +13,23 @@ export async function GET(request) {
 
     // Filters
     const maxPrice = searchParams.get("price");
-    const category = searchParams.get("category");
+    const categories = searchParams.getAll("category");
+
     const brandsString = searchParams.get("brands");
     const sort = searchParams.get("sort");
     const brands = brandsString ? brandsString.split(",") : [];
 
     const whereClause = {};
 
-    // Category filter
-    if (category && category.toLowerCase() !== "all") {
-      whereClause.category = { equals: category, mode: "insensitive" };
-    }
+    // Category filter (supports multiple categories)
+if (categories.length > 0 && !categories.includes("all")) {
+  whereClause.OR = categories.map((cat) => ({
+    category: {
+      equals: cat,
+      mode: "insensitive",
+    },
+  }));
+}
 
     // Price filter
     if (maxPrice && !isNaN(parseFloat(maxPrice))) {

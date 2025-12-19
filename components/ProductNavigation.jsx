@@ -3,15 +3,6 @@
 import { Heart, User, ShoppingBag } from "lucide-react";
 import BackButton from "./BackButton";
 
-/**
- * ProductNavigation - Client component for product page navigation
- * 
- * Provides:
- * - Back button for easy return to previous page
- * - Quick access to wishlist, account, and cart
- * - Sticky positioning on scroll for better UX
- * - Responsive design for all screen sizes
- */
 export default function ProductNavigation() {
     return (
         <div className="flex items-center justify-between w-full mb-6">
