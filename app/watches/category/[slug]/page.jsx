@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useParams, useSearchParams } from "next/navigation";
+import { useParams, useSearchParams, useRouter, usePathname } from "next/navigation";
 import FilterSidebar from "@/components/FilterSidebar";
 import BackButton from "@/components/BackButton";
 
@@ -38,6 +38,9 @@ const PriceDisplay = ({ price }) => {
 export default function CategoryPage() {
   const params = useParams();
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
+  
   const [slug, setSlug] = useState("");
   const [filters, setFilters] = useState({
     brands: [],
@@ -48,7 +51,11 @@ export default function CategoryPage() {
   });
   const [watches, setWatches] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [page, setPage] = useState(1);
+
+  // Initialize page from URL, default to 1
+  const initialPage = Number(searchParams.get("page")) || 1;
+  const [page, setPage] = useState(initialPage);
+  
   const [limit] = useState(12);
   const [totalPages, setTotalPages] = useState(1);
   const [filtersOpen, setFiltersOpen] = useState(false);
@@ -56,6 +63,21 @@ export default function CategoryPage() {
   useEffect(() => {
     setSlug(params?.slug || "all");
   }, [params]);
+
+  // Sync state changes to URL
+  useEffect(() => {
+    const paramsObj = new URLSearchParams(searchParams.toString());
+    
+    // Only update if changed
+    if (Number(paramsObj.get("page")) !== page) {
+        if (page > 1) {
+            paramsObj.set("page", page);
+        } else {
+            paramsObj.delete("page");
+        }
+        router.push(`${pathname}?${paramsObj.toString()}`, { scroll: false });
+    }
+  }, [page, pathname, router, searchParams]);
 
   // Handle brand from URL query params (e.g., ?brand=Titan)
   useEffect(() => {
@@ -85,41 +107,68 @@ export default function CategoryPage() {
         paramsObj.append("gender", filters.gender.join(","));
       if (filters.sortBy) paramsObj.append("sort", filters.sortBy);
 
-      filters.collections.forEach((selectedLabel) => {
-        const collection = availableCollections.find(
-          (col) => col.label === selectedLabel
-        );
-        if (collection) {
-          if (Array.isArray(collection.value)) {
-            collection.value.forEach((v) => paramsObj.append("category", v));
-          } else {
-            paramsObj.append("category", collection.value);
-          }
-        }
-      });
+      const selectedLabels = filters.collections;
+      const currentSlug = slug?.toLowerCase();
 
-      const categoryMap = {
-        men: "Guys Watch",
-        women: "Girls Watch",
-        wallclocks: "Wall clock",
-        unisex: "unisex watch",
-        couple: "couple watch",
-        smartwatches: [
-          "smart-guys watch",
-          "smart-girls watch",
-          "smart-unisex watch",
-        ],
-        all: "all",
-      };
-      const dbCategory = categoryMap[slug?.toLowerCase()] || "all";
+      // Helper to check active state
+      const isActive = (label, slugKeys) => 
+        selectedLabels.includes(label) || (Array.isArray(slugKeys) ? slugKeys.includes(currentSlug) : currentSlug === slugKeys);
 
-      if (dbCategory !== "all") {
-        if (Array.isArray(dbCategory)) {
-          dbCategory.forEach((cat) => paramsObj.append("category", cat));
+      const menActive = isActive("Men", "men");
+      const womenActive = isActive("Women", "women");
+      const smartActive = isActive("Smartwatches", "smartwatches");
+      const wallActive = isActive("Wallclock", "wallclocks");
+      const coupleActive = isActive("Couple", "couple");
+
+      let categoriesToFetch = new Set();
+
+      // 1. Smartwatches Logic (Intersection with Gender)
+      if (smartActive) {
+        if (menActive && !womenActive) {
+          categoriesToFetch.add("smart-guys watch");
+          categoriesToFetch.add("smart-unisex watch");
+        } else if (womenActive && !menActive) {
+          categoriesToFetch.add("smart-girls watch");
+          categoriesToFetch.add("smart-unisex watch");
         } else {
-          paramsObj.append("category", dbCategory);
+          // All Smartwatches (if no gender or both genders)
+          categoriesToFetch.add("smart-guys watch");
+          categoriesToFetch.add("smart-girls watch");
+          categoriesToFetch.add("smart-unisex watch");
         }
       }
+
+      // 2. Wall Clock Logic
+      if (wallActive) {
+        categoriesToFetch.add("Wall clock");
+      }
+
+      // 3. Standard Watch Logic (Only if NO specialized type is active)
+      // If user wants "Men" + "Smart", we only show Smart. We check !smartActive before adding standard.
+      if (!smartActive && !wallActive) {
+        if (menActive) categoriesToFetch.add("Guys Watch");
+        if (womenActive) categoriesToFetch.add("Girls Watch");
+        if (coupleActive) categoriesToFetch.add("couple watch");
+      }
+
+      // 4. Default / Fallback Logic
+      if (categoriesToFetch.size === 0) {
+        // Handle specific slugs not covered by filters (e.g., 'unisex')
+        const categoryMap = {
+          unisex: "unisex watch",
+          all: "all",
+        };
+        const mapped = categoryMap[currentSlug];
+        if (mapped) {
+          categoriesToFetch.add(mapped);
+        } else {
+          // If purely empty and not a known slug, default to 'all' or let backend handle empty query
+           if (currentSlug === 'all') categoriesToFetch.add("all");
+        }
+      }
+
+      // Append to params
+      categoriesToFetch.forEach((cat) => paramsObj.append("category", cat));
 
       const res = await fetch(`/api/watches?${paramsObj.toString()}`);
       const data = await res.json();
@@ -150,7 +199,7 @@ export default function CategoryPage() {
       brands: [],
       gender: [],
       collections: [],
-      sortBy: "relevance",
+      sortBy: "asc",
       price: 50000,
     });
     setPage(1);
@@ -167,7 +216,7 @@ export default function CategoryPage() {
       <div className="max-w-7xl mx-auto px-4 md:px-8">
         {/* Back Button - Always visible at top */}
         <div className="mb-6">
-          <BackButton fallbackUrl="/" label="Back to Home" />
+          <BackButton fallbackUrl="/" label="Back to Home" disableHistory={true} />
         </div>
 
         {/* Mobile header with title and Filters button */}
@@ -193,6 +242,7 @@ export default function CategoryPage() {
               slug={slug}
               filters={filters}
               setFilters={setFilters}
+              setPage={setPage}
               onClearAll={handleReset}
             />
           </aside>
@@ -288,6 +338,7 @@ export default function CategoryPage() {
               slug={slug}
               filters={filters}
               setFilters={setFilters}
+              setPage={setPage}
               onClearAll={handleReset}
             />
           </div>

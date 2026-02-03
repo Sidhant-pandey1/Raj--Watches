@@ -27,10 +27,15 @@ function CartProvider({ children }) {
   return <>{children}</>;
 }
 
+import SmoothScrolling from "@/components/SmoothScrolling";
+import LoadingScreen from "@/components/LoadingScreen";
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <LoadingScreen />
+        <SmoothScrolling />
         <CartProvider>
           {children}
         </CartProvider>

@@ -15,8 +15,7 @@ export default function Gallery({ images = [], productName = "product" }) {
     <div className="flex flex-col items-center">
       {/* Main image (unchanged) */}
       <div
-        className="bg-white shadow-lg rounded-3xl mb-6 p-4 flex items-center justify-center overflow-hidden"
-        style={{ width: 420, height: 480 }}
+        className="bg-white shadow-xl rounded-3xl mb-6 p-6 flex items-center justify-center overflow-hidden w-full max-w-[400px] aspect-[4/5] relative"
       >
         <div className="relative w-full h-full">
           <Image
@@ -40,18 +39,20 @@ export default function Gallery({ images = [], productName = "product" }) {
             type="button"
             // enforce fixed footprint on the button (avoid parent's flex resizing)
             style={{
-              width: 70,
-              height: 70,
+              width: 60,
+              height: 60,
               display: "inline-flex",
-              flex: "0 0 auto", // flex-none behavior
+              flex: "0 0 auto", 
               alignItems: "center",
               justifyContent: "center",
               overflow: "hidden",
               background: "transparent",
-              borderRadius: "9999px",
-              padding: 4,
-              border: mainIdx === idx ? "2px solid #ac9247" : "1px solid rgba(0,0,0,0.04)",
-              boxShadow: mainIdx === idx ? "0 6px 18px rgba(0,0,0,0.12)" : "0 4px 10px rgba(0,0,0,0.06)",
+              borderRadius: "50%",
+              padding: 3,
+              border: mainIdx === idx ? "2px solid #ac9247" : "1px solid rgba(0,0,0,0.05)",
+              boxShadow: mainIdx === idx ? "0 4px 12px rgba(172, 146, 71, 0.3)" : "none",
+              cursor: "pointer",
+              transition: "all 0.2s ease"
             }}
           >
             <img
