@@ -30,6 +30,9 @@ function CartProvider({ children }) {
   return <>{children}</>;
 }
 
+import SmoothScrolling from "@/components/SmoothScrolling";
+import LoadingScreen from "@/components/LoadingScreen";
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en">

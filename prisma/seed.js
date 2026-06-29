@@ -77,9 +77,18 @@ async function main() {
     `Duplicates removed: ${rawWatchData.length - deduplicatedRawData.length}`
   );
 
-  await prisma.$transaction(
-    transformedData.map((w) => prisma.watch.create({ data: w }))
-  );
+  // Batch insert using createMany for performance and stability
+  const BATCH_SIZE = 10;
+  for (let i = 0; i < transformedData.length; i += BATCH_SIZE) {
+    const batch = transformedData.slice(i, i + BATCH_SIZE);
+    await prisma.watch.createMany({
+      data: batch,
+      skipDuplicates: true,
+    });
+    console.log(`Processed batch ${Math.floor(i / BATCH_SIZE) + 1} (${Math.min(i + BATCH_SIZE, transformedData.length)} / ${transformedData.length})`);
+    // Add a small delay to prevent overwhelming the database
+    await new Promise(resolve => setTimeout(resolve, 200));
+  }
 
   console.log("Seeding finished successfully.");
 }

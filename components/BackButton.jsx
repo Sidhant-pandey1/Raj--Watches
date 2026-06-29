@@ -17,16 +17,17 @@ import { ArrowLeft } from "lucide-react";
 export default function BackButton({
     fallbackUrl = "/watches",
     label = "Back",
-    className = ""
+    className = "",
+    disableHistory = false
 }) {
     const router = useRouter();
 
     const handleBack = () => {
-        // Check if there's history to go back to
-        if (typeof window !== "undefined" && window.history.length > 1) {
+        // Check if there's history to go back to, unless disabled
+        if (!disableHistory && typeof window !== "undefined" && window.history.length > 1) {
             router.back();
         } else {
-            // Fallback to specified route if no history
+            // Fallback to specified route if no history or history disabled
             router.push(fallbackUrl);
         }
     };

@@ -31,8 +31,8 @@ const availableCollections = [
 const genderOptions = ["Men", "Women", "Unisex"];
 
 const sortOptions = [
-  { value: "relevance", label: "Relevance" },
   { value: "asc", label: "Price: Low to High" },
+  { value: "relevance", label: "Relevance" },
   { value: "desc", label: "Price: High to Low" },
 ];
 
@@ -40,6 +40,7 @@ export default function FilterSidebar({
   slug,
   filters = {},
   setFilters,
+  setPage,
   onClearAll,
   setPage,
 }) {
@@ -157,6 +158,7 @@ export default function FilterSidebar({
         [group]: nextGroup,
       };
     });
+    if (setPage) setPage(1);
   };
 
   const handlePrice = (e) => {
@@ -206,7 +208,6 @@ export default function FilterSidebar({
         </button>
       </div>
 
-      {/* Sort */}
       <div className="mb-6">
         <p className="text-xs font-semibold text-[#1a1a2e] mb-2">Sort By</p>
         <select
@@ -222,7 +223,6 @@ export default function FilterSidebar({
         </select>
       </div>
 
-      {/* Brands */}
       <div className="mb-6">
         <p className="text-xs font-semibold text-[#1a1a2e] mb-2">Brands</p>
         <div className="space-y-2 max-h-40 overflow-y-auto pr-1 custom-scrollbar">
@@ -285,7 +285,6 @@ export default function FilterSidebar({
         </div>
       </div>
 
-      {/* Price */}
       <div>
         <p className="text-xs font-semibold text-[#1a1a2e] mb-2">Max Price</p>
         <input
