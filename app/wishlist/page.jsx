@@ -53,26 +53,26 @@ export default function WishlistPage() {
 
   if (loading) {
     return (
-      <main className="max-w-6xl mx-auto px-6 py-10">
-        <h1 className="text-3xl font-serif font-extrabold mb-6">Your Wishlist</h1>
-        <div>Loading wishlist…</div>
+      <main className="max-w-6xl mx-auto px-5 sm:px-8 py-10 bg-[#faf9f6] min-h-screen">
+        <h1 className="text-3xl font-bold mb-6 text-[#1a1a2e]" style={{ fontFamily: "'Outfit', sans-serif" }}>Your Wishlist</h1>
+        <div className="text-[#6b7280]">Loading wishlist…</div>
       </main>
     );
   }
 
   return (
-    <main className="max-w-6xl mx-auto px-6 py-10">
-      <h1 className="text-3xl font-serif font-extrabold mb-6">Your Wishlist</h1>
+    <main className="max-w-6xl mx-auto px-5 sm:px-8 py-10 bg-[#faf9f6] min-h-screen">
+      <h1 className="text-3xl font-bold mb-6 text-[#1a1a2e]" style={{ fontFamily: "'Outfit', sans-serif" }}>Your Wishlist</h1>
 
       {(!products || products.length === 0) ? (
-        <div className="text-gray-600">
-          Your wishlist is empty. <Link href="/watches/category/all" className="text-[#b89f56] underline">Browse watches</Link>
+        <div className="text-[#6b7280]">
+          Your wishlist is empty. <Link href="/watches/category/all" className="text-[#c9a84c] underline hover:text-[#a88b3a] transition-colors">Browse watches</Link>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
           {products.map((p) => (
-            <article key={p.id} className="bg-white rounded-xl p-4 shadow-sm">
-              <div className="h-48 flex items-center justify-center bg-gray-50 rounded-md overflow-hidden">
+            <article key={p.id} className="bg-white rounded-xl border border-[#e5e7eb] p-4 hover:border-[#c9a84c] hover:shadow-lg transition-all duration-300">
+              <div className="h-48 flex items-center justify-center bg-[#faf9f6] rounded-lg overflow-hidden">
                 <Image
                   src={p.images && p.images[0] ? p.images[0] : "/placeholder.jpg"}
                   alt={p.name || "Product image"}
@@ -83,16 +83,16 @@ export default function WishlistPage() {
               </div>
 
               <div className="mt-3">
-                <h2 className="text-lg font-semibold">{p.name}</h2>
-                <div className="text-[#b89f56] font-bold mt-2">₹{Math.round(p.price || 0).toLocaleString()}</div>
+                <h2 className="text-base font-bold text-[#1a1a2e]">{p.name}</h2>
+                <div className="text-[#c9a84c] font-bold mt-2 text-lg">₹{Math.round(p.price || 0).toLocaleString()}</div>
 
                 <div className="mt-4 flex gap-3">
-                  <Link href={`/watches/product/${p.id}`} className="px-3 py-2 bg-[#23221d] text-white rounded">
+                  <Link href={`/watches/product/${p.id}`} className="px-4 py-2 bg-[#1a1a2e] text-white rounded-lg text-sm font-semibold hover:bg-[#c9a84c] transition-all duration-300">
                     View
                   </Link>
                   <button
                     onClick={() => removeFromWishlist(p.id)}
-                    className="px-3 py-2 border rounded"
+                    className="px-4 py-2 border border-[#e5e7eb] rounded-lg text-sm font-medium text-[#1a1a2e] hover:border-red-400 hover:text-red-500 transition-all duration-300"
                   >
                     Remove
                   </button>

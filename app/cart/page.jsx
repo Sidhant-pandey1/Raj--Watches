@@ -98,16 +98,16 @@ export default function CartPage() {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center py-6 px-3">
-      <div className="w-full max-w-4xl bg-white rounded-xl shadow-xl p-4 sm:p-6 md:p-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div className="min-h-screen bg-[#faf9f6] flex flex-col items-center py-6 px-3">
+      <div className="w-full max-w-4xl bg-white rounded-xl border border-[#e5e7eb] shadow-sm p-4 sm:p-6 md:p-8 grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Product List */}
         <div className="md:col-span-2">
-          <h1 className="text-2xl font-bold mb-4 text-gray-900">
+          <h1 className="text-2xl font-bold mb-4 text-[#1a1a2e]" style={{ fontFamily: "'Outfit', sans-serif" }}>
             Your Shopping Cart
           </h1>
 
           {products.length === 0 ? (
-            <p className="text-gray-600">Your cart is empty.</p>
+            <p className="text-[#6b7280]">Your cart is empty.</p>
           ) : (
             <ul>
               {products.map((product, idx) => {
@@ -120,7 +120,7 @@ export default function CartPage() {
                 return (
                   <li
                     key={key}
-                    className="flex flex-col sm:flex-row sm:justify-between gap-4 border-b py-4"
+                    className="flex flex-col sm:flex-row sm:justify-between gap-4 border-b border-[#e5e7eb] py-4"
                   >
                     <div className="flex items-start gap-4">
                       <Image
@@ -128,18 +128,18 @@ export default function CartPage() {
                         alt={product.name || "Product image"}
                         width={80}
                         height={80}
-                        className="rounded-lg border object-cover"
+                        className="rounded-lg border border-[#e5e7eb] object-cover"
                       />
                       <div>
-                        <div className="text-lg font-semibold text-gray-900">
+                        <div className="text-base font-semibold text-[#1a1a2e]">
                           {product.name}
                         </div>
-                        <div className="text-sm text-gray-600 mt-1">
+                        <div className="text-sm text-[#6b7280] mt-1">
                           {product.color
                             ? `Color: ${product.color}`
                             : "Color: N/A"}
                         </div>
-                        <div className="text-md font-bold mt-2 text-[#b89f56]">
+                        <div className="text-base font-bold mt-2 text-[#c9a84c]">
                           ₹{unit.toLocaleString()}
                         </div>
                       </div>
@@ -148,13 +148,7 @@ export default function CartPage() {
                     {/* Quantity and Actions */}
                     <div className="flex items-center gap-2 sm:self-center sm:ml-auto">
                       <div
-                        className="flex items-center"
-                        style={{
-                          border: "1px solid #e5e7eb",
-                          borderRadius: "6px",
-                          background: "#fff",
-                          overflow: "hidden",
-                        }}
+                        className="flex items-center border border-[#e5e7eb] rounded-lg overflow-hidden"
                       >
                         <button
                           aria-label="Decrease quantity"
@@ -165,13 +159,13 @@ export default function CartPage() {
                             )
                           }
                           disabled={(product.qty ?? 1) <= 1}
-                          className="w-9 h-8 flex items-center justify-center text-gray-400 font-bold text-xl border-none bg-white hover:text-black transition focus:outline-none"
+                          className="w-9 h-8 flex items-center justify-center text-[#9ca3af] font-bold text-xl border-none bg-white hover:text-[#1a1a2e] transition focus:outline-none"
                           style={{ borderRight: "1px solid #e5e7eb" }}
                         >
                           –
                         </button>
                         <span
-                          className="w-8 h-8 flex items-center justify-center text-gray-900 font-bold text-base bg-white"
+                          className="w-8 h-8 flex items-center justify-center text-[#1a1a2e] font-bold text-base bg-white"
                           style={{ textAlign: "center" }}
                         >
                           {product.qty ?? 1}
@@ -184,7 +178,7 @@ export default function CartPage() {
                               (product.qty ?? 1) + 1
                             )
                           }
-                          className="w-9 h-8 flex items-center justify-center text-gray-600 font-bold text-xl border-none bg-white hover:text-black transition focus:outline-none"
+                          className="w-9 h-8 flex items-center justify-center text-[#6b7280] font-bold text-xl border-none bg-white hover:text-[#1a1a2e] transition focus:outline-none"
                           style={{ borderLeft: "1px solid #e5e7eb" }}
                         >
                           +
@@ -194,7 +188,7 @@ export default function CartPage() {
                       <button
                         aria-label="Remove from cart"
                         onClick={() => deleteItem(product.clientId)}
-                        className="ml-1 px-3 py-1 text-sm rounded text-white bg-red-500 hover:bg-red-700"
+                        className="ml-1 px-3 py-1.5 text-sm rounded-lg text-white bg-red-500 hover:bg-red-600 transition-colors"
                       >
                         Remove
                       </button>
@@ -207,25 +201,25 @@ export default function CartPage() {
         </div>
 
         {/* Order Summary */}
-        <div className="bg-gray-100 rounded-lg p-6 flex flex-col justify-between h-full">
-          <h2 className="text-xl font-bold mb-4 text-gray-800">
+        <div className="bg-[#faf9f6] rounded-xl p-6 flex flex-col justify-between h-full border border-[#e5e7eb]">
+          <h2 className="text-lg font-bold mb-4 text-[#1a1a2e]" style={{ fontFamily: "'Outfit', sans-serif" }}>
             Order Summary
           </h2>
-          <div className="flex justify-between text-gray-700 mb-2">
+          <div className="flex justify-between text-[#4b5563] mb-2 text-sm">
             <span>Order Value</span>
             <span>₹{total.toLocaleString()}</span>
           </div>
-          <div className="flex justify-between text-gray-700 mb-2">
+          <div className="flex justify-between text-[#4b5563] mb-2 text-sm">
             <span>Shipping</span>
             <span className="text-green-600 font-semibold">Free</span>
           </div>
-          <div className="border-t pt-4 mt-4 flex justify-between font-bold text-lg text-black">
+          <div className="border-t border-[#e5e7eb] pt-4 mt-4 flex justify-between font-bold text-lg text-[#1a1a2e]">
             <span>Grand Total</span>
             <span>₹{total.toLocaleString()}</span>
           </div>
           <Link
             href="/checkout"
-            className="mt-8 w-full bg-[#23221d] text-white py-3 text-lg font-bold rounded-lg hover:bg-[#b89f56] hover:text-black transition text-center"
+            className="mt-8 w-full bg-[#1a1a2e] text-white py-3 text-base font-bold rounded-lg hover:bg-[#c9a84c] transition-all duration-300 text-center block"
           >
             Proceed to Checkout
           </Link>

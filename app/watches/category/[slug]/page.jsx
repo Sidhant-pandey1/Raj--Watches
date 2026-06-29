@@ -28,7 +28,7 @@ const PriceDisplay = ({ price }) => {
 
   return (
     <div className="mt-2 flex items-baseline gap-2">
-      <span className="text-xl font-extrabold text-gray-900">
+      <span className="text-lg font-bold text-[#1a1a2e]">
         {formatPrice(price)}
       </span>
     </div>
@@ -38,7 +38,11 @@ const PriceDisplay = ({ price }) => {
 export default function CategoryPage() {
   const params = useParams();
   const searchParams = useSearchParams();
-  const [slug, setSlug] = useState("");
+  const initialSlug = params?.slug || "all";
+
+  const [isMounted, setIsMounted] = useState(false);
+  const [slug, setSlug] = useState(initialSlug);
+
   const [filters, setFilters] = useState({
     brands: [],
     gender: [],
@@ -46,13 +50,33 @@ export default function CategoryPage() {
     sortBy: "relevance",
     price: 50000,
   });
+
+  const [page, setPage] = useState(1);
+
+  // Load from sessionStorage post-mount to avoid hydration mismatch
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const savedFilters = sessionStorage.getItem(`rw-filters-${initialSlug}`);
+        if (savedFilters) setFilters(JSON.parse(savedFilters));
+
+        const savedPage = sessionStorage.getItem(`rw-page-${initialSlug}`);
+        if (savedPage) setPage(parseInt(savedPage, 10) || 1);
+      } catch (e) {}
+    }
+  }, [initialSlug]);
+
   const [watches, setWatches] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [page, setPage] = useState(1);
   const [limit] = useState(12);
   const [totalPages, setTotalPages] = useState(1);
   const [filtersOpen, setFiltersOpen] = useState(false);
 
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  // Update slug when URL param changes
   useEffect(() => {
     setSlug(params?.slug || "all");
   }, [params]);
@@ -69,6 +93,14 @@ export default function CategoryPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
+  // Save to sessionStorage whenever filters or page changes
+  useEffect(() => {
+    if (isMounted) {
+      sessionStorage.setItem(`rw-filters-${slug}`, JSON.stringify(filters));
+      sessionStorage.setItem(`rw-page-${slug}`, page.toString());
+    }
+  }, [filters, page, slug, isMounted]);
+
   const fetchWatches = async () => {
     if (!slug) return;
     setLoading(true);
@@ -84,6 +116,9 @@ export default function CategoryPage() {
       if (filters.gender.length > 0)
         paramsObj.append("gender", filters.gender.join(","));
       if (filters.sortBy) paramsObj.append("sort", filters.sortBy);
+
+      const searchQuery = searchParams.get("search");
+      if (searchQuery) paramsObj.append("search", searchQuery);
 
       filters.collections.forEach((selectedLabel) => {
         const collection = availableCollections.find(
@@ -143,7 +178,7 @@ export default function CategoryPage() {
   useEffect(() => {
     fetchWatches();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [slug, page, filters]);
+  }, [slug, page, filters, searchParams.get("search")]);
 
   const handleReset = () => {
     setFilters({
@@ -163,7 +198,7 @@ export default function CategoryPage() {
       : `${titleSlug[0].toUpperCase()}${titleSlug.slice(1)} Watches`;
 
   return (
-    <section className="bg-gray-50 min-h-screen w-full py-6 md:py-10">
+    <section className="bg-[#faf9f6] min-h-screen w-full py-6 md:py-10">
       <div className="max-w-7xl mx-auto px-4 md:px-8">
         {/* Back Button - Always visible at top */}
         <div className="mb-6">
@@ -172,10 +207,10 @@ export default function CategoryPage() {
 
         {/* Mobile header with title and Filters button */}
         <div className="mb-4 flex items-center justify-between lg:hidden">
-          <h1 className="text-lg font-semibold text-gray-900">{title}</h1>
+          <h1 className="text-lg font-semibold text-[#1a1a2e]">{title}</h1>
           <button
             onClick={() => setFiltersOpen(true)}
-            className="px-4 py-2 rounded-full bg-[--accent-gold] text-white text-sm font-semibold shadow-sm"
+            className="px-4 py-2 rounded-lg bg-[#1a1a2e] text-white text-sm font-semibold shadow-sm hover:bg-[#c9a84c] transition-colors duration-300"
           >
             Filters
           </button>
@@ -183,7 +218,7 @@ export default function CategoryPage() {
 
         {/* Desktop title */}
         <div className="hidden lg:block mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">{title}</h1>
+          <h1 className="text-2xl font-bold text-[#1a1a2e]">{title}</h1>
         </div>
 
         <div className="flex gap-6">
@@ -194,29 +229,31 @@ export default function CategoryPage() {
               filters={filters}
               setFilters={setFilters}
               onClearAll={handleReset}
+              setPage={setPage}
             />
           </aside>
 
           {/* Product grid */}
           <div className="flex-1">
             {loading ? (
-              <div className="text-center py-16 text-gray-500">
+              <div className="text-center py-16 text-[#6b7280]">
+                <div className="luxury-spinner mx-auto mb-4"></div>
                 Loading watches...
               </div>
             ) : watches.length === 0 ? (
-              <div className="text-center py-16 text-gray-500">
+              <div className="text-center py-16 text-[#6b7280]">
                 No products found for selected filters.
               </div>
             ) : (
               <>
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5">
                   {watches.map((watch) => (
                     <Link
                       key={watch.id}
                       href={`/watches/product/${watch.id}`}
-                      className="group block bg-white p-3 md:p-4 rounded-xl shadow hover:shadow-xl transition"
+                      className="group block bg-white p-3 md:p-4 rounded-xl border border-[#e5e7eb] hover:border-[#c9a84c] hover:shadow-lg hover:-translate-y-0.5 transition-all duration-400"
                     >
-                      <div className="relative w-full aspect-[4/5] mb-3 md:mb-4 overflow-hidden rounded-lg bg-gray-100">
+                      <div className="relative w-full aspect-[4/5] mb-3 md:mb-4 overflow-hidden rounded-lg bg-[#faf9f6]">
                         <Image
                           src={
                             Array.isArray(watch.images)
@@ -225,14 +262,14 @@ export default function CategoryPage() {
                           }
                           alt={watch.name}
                           fill
-                          className="object-cover group-hover:scale-105 transition"
+                          className="object-cover group-hover:scale-105 transition-transform duration-500"
                         />
                       </div>
 
-                      <p className="text-[11px] md:text-xs text-gray-500 uppercase">
+                      <p className="text-[11px] md:text-xs text-[#c9a84c] font-semibold uppercase tracking-wide">
                         {watch.brand}
                       </p>
-                      <h2 className="text-sm md:text-base font-bold text-gray-800 truncate">
+                      <h2 className="text-sm md:text-base font-bold text-[#1a1a2e] truncate mt-0.5">
                         {watch.name}
                       </h2>
 
@@ -242,21 +279,21 @@ export default function CategoryPage() {
                 </div>
 
                 {/* Pagination */}
-                <div className="flex justify-center items-center gap-3 mt-8 md:mt-10">
+                <div className="flex justify-center items-center gap-3 mt-10">
                   <button
                     onClick={() => setPage((p) => Math.max(p - 1, 1))}
                     disabled={page === 1}
-                    className="px-3 md:px-4 py-1 border rounded-md hover:bg-gray-100 disabled:opacity-50 text-black"
+                    className="px-4 py-2 border border-[#e5e7eb] rounded-lg hover:border-[#c9a84c] hover:text-[#c9a84c] disabled:opacity-40 text-[#1a1a2e] text-sm font-medium transition-all duration-300"
                   >
                     Previous
                   </button>
-                  <span className="text-black text-sm md:text-base">
+                  <span className="text-[#1a1a2e] text-sm font-medium">
                     Page {page} of {totalPages}
                   </span>
                   <button
                     onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
                     disabled={page === totalPages}
-                    className="px-3 md:px-4 py-1 border rounded-md hover:bg-gray-100 disabled:opacity-50 text-black"
+                    className="px-4 py-2 border border-[#e5e7eb] rounded-lg hover:border-[#c9a84c] hover:text-[#c9a84c] disabled:opacity-40 text-[#1a1a2e] text-sm font-medium transition-all duration-300"
                   >
                     Next
                   </button>
@@ -274,12 +311,12 @@ export default function CategoryPage() {
             className="flex-1 bg-black/40"
             onClick={() => setFiltersOpen(false)}
           />
-          <div className="w-80 max-w-[80%] h-full bg-white dark:bg-neutral-900 shadow-xl p-4 overflow-y-auto">
+          <div className="w-80 max-w-[80%] h-full bg-white shadow-xl p-4 overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-base font-semibold">Filters</h2>
+              <h2 className="text-base font-semibold text-[#1a1a2e]">Filters</h2>
               <button
                 onClick={() => setFiltersOpen(false)}
-                className="text-sm text-gray-500"
+                className="text-sm text-[#6b7280] hover:text-[#1a1a2e] transition-colors"
               >
                 Close
               </button>
@@ -289,6 +326,7 @@ export default function CategoryPage() {
               filters={filters}
               setFilters={setFilters}
               onClearAll={handleReset}
+              setPage={setPage}
             />
           </div>
         </div>

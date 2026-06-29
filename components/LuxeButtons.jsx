@@ -31,7 +31,7 @@ export default function LuxeButtons({ product }) {
   return (
     <div className="flex flex-col sm:flex-row gap-4 w-full">
       <button
-        className="bg-[#b89f56] text-white font-bold text-lg py-3 px-8 rounded-full shadow hover:bg-[#948138] transition uppercase tracking-wider"
+        className="bg-[#c9a84c] text-white font-bold text-base py-3.5 px-8 rounded-lg shadow-sm hover:bg-[#a88b3a] transition-all duration-300 uppercase tracking-wider"
         onClick={handleAddToCart}
         disabled={added}
       >
@@ -39,56 +39,16 @@ export default function LuxeButtons({ product }) {
       </button>
       <button
         onClick={handleBuyNow}
-        className="bg-black text-white font-bold py-3 px-8 rounded-full shadow hover:bg-[#b89f56] hover:text-black transition uppercase tracking-wider flex items-center justify-center"
+        className="bg-[#1a1a2e] text-white font-bold py-3.5 px-8 rounded-lg shadow-sm hover:bg-[#c9a84c] transition-all duration-300 uppercase tracking-wider flex items-center justify-center"
       >
         Buy Now
       </button>
       <Link
         href={`/watches/category/all`}
-        className="bg-white text-[#b89f56] border-2 border-[#b89f56] font-bold py-3 px-8 rounded-full hover:bg-[#f6ecd1] hover:text-[#6a5f2c] transition uppercase tracking-wider flex items-center justify-center"
+        className="bg-white text-[#1a1a2e] border-2 border-[#e5e7eb] font-bold py-3.5 px-8 rounded-lg hover:border-[#c9a84c] hover:text-[#c9a84c] transition-all duration-300 uppercase tracking-wider flex items-center justify-center"
       >
         Back to Shop
       </Link>
     </div>
   );
 }
-
-
-// "use client";
-// import { useState } from "react";
-// import { useRouter } from "next/navigation";
-// import Link from "next/link";
-
-// export default function LuxeButtons({ product }) {
-//   const [added, setAdded] = useState(false);
-//   const router = useRouter();
-//   const handleAddToCart = () => {
-//     const prev = JSON.parse(localStorage.getItem("cart") || "[]");
-//     localStorage.setItem("cart", JSON.stringify([...prev, { id: product.id, qty: 1 }]));
-//     setAdded(true);
-//   };
-
-//   return (
-//     <div className="flex flex-col sm:flex-row gap-4 w-full">
-//       <button
-//         className="bg-[#b89f56] text-white font-bold text-lg py-3 px-8 rounded-full shadow hover:bg-[#948138] transition uppercase tracking-wider"
-//         onClick={handleAddToCart}
-//         disabled={added}
-//       >
-//         {added ? "Added to Cart" : "Add to Cart"}
-//       </button>
-//       <Link
-//         href={`/checkout?productId=${product.id}`}
-//         className="bg-black text-white font-bold py-3 px-8 rounded-full shadow hover:bg-[#b89f56] hover:text-black transition uppercase tracking-wider flex items-center justify-center"
-//       >
-//         Buy Now
-//       </Link>
-//       <Link
-//         href={`/watches/category/all`}
-//         className="bg-white text-[#b89f56] border-2 border-[#b89f56] font-bold py-3 px-8 rounded-full hover:bg-[#f6ecd1] hover:text-[#6a5f2c] transition uppercase tracking-wider flex items-center justify-center"
-//       >
-//         Back to Shop
-//       </Link>
-//     </div>
-//   );
-// }

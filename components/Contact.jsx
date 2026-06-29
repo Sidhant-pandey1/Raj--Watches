@@ -100,57 +100,42 @@ const Contact = () => {
     <section
       id="contact"
       ref={sectionRef}
-      className="relative py-24 bg-gradient-to-br from-[#f8f3e2] via-[#e7dcc1] to-[#f6ecd0] overflow-hidden"
+      className="relative py-20 sm:py-24 bg-white overflow-hidden"
     >
-      {/* Gold Glow Orbs */}
-      <div className="absolute top-[-80px] left-[-80px] w-60 h-60 bg-gradient-to-br from-[#dec681] to-[#b49c61] rounded-full opacity-30 blur-[60px] pointer-events-none" />
-      <div className="absolute bottom-[-100px] right-[-100px] w-80 h-80 bg-gradient-to-tr from-[#c6ab63] to-[#e9d595] rounded-full opacity-30 blur-[90px] pointer-events-none" />
-
       <div className="relative z-10 max-w-6xl mx-auto px-5 sm:px-8">
         {/* Section Header */}
         <div className="text-center mb-14">
-          <h2 className="text-4xl md:text-5xl font-serif font-extrabold text-[#ad943f] mb-6 tracking-wide drop-shadow-sm">
+          <h2 className="text-3xl sm:text-4xl font-semibold text-[#1a1a2e] mb-5 tracking-tight">
             Let's Start Your Timeless Journey
           </h2>
-          <p className="text-xl text-[#6e6127] font-light max-w-2xl mx-auto leading-relaxed">
-            Every second counts — let’s make yours timeless. Get in touch with us today.
+          <p className="text-[15px] sm:text-base text-[#6b7280] max-w-2xl mx-auto leading-relaxed">
+            Every second counts — let's make yours timeless. Get in touch with us today.
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-14">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-14">
           {/* Contact Information */}
-          <div className="space-y-10">
-            <div className="bg-gradient-to-br from-[#e9dfa9]/70 via-white/50 to-[#efe0c6]/80 rounded-2xl p-9 shadow-lg border border-[#e8dfbe]">
-              <h3 className="text-2xl font-serif font-semibold text-[#926e1b] mb-6">
-                Why Choose Us?
-              </h3>
-              <ul className="space-y-5 text-[#7e6220]">
-                <li className="flex items-start">
-                  <span className="w-2 h-2 bg-[#c8a944] rounded-full mt-2 mr-4"></span>
-                  <span>Bespoke discounts for businesses & connoisseurs</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="w-2 h-2 bg-[#c8a944] rounded-full mt-2 mr-4"></span>
-                  <span>Expedited, secure shipping on all premium orders</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="w-2 h-2 bg-[#c8a944] rounded-full mt-2 mr-4"></span>
-                  <span>One-on-one guidance for collection curation</span>
-                </li>
+          <div className="space-y-8">
+            <div className="bg-[#faf9f6] border border-[#e5e7eb] rounded-xl p-8">
+              <h3 className="text-xl font-semibold text-[#1a1a2e] mb-5" style={{ fontFamily: "'Outfit', sans-serif" }}>Why Choose Us?</h3>
+              <ul className="space-y-3 text-[#4b5563] text-sm">
+                <li className="flex items-start"><span className="w-2 h-2 bg-[#c9a84c] rounded-full mt-1.5 mr-3 flex-shrink-0"></span>Bespoke discounts for businesses & connoisseurs</li>
+                <li className="flex items-start"><span className="w-2 h-2 bg-[#c9a84c] rounded-full mt-1.5 mr-3 flex-shrink-0"></span>Expedited, secure shipping on all premium orders</li>
+                <li className="flex items-start"><span className="w-2 h-2 bg-[#c9a84c] rounded-full mt-1.5 mr-3 flex-shrink-0"></span>One-on-one guidance for collection curation</li>
               </ul>
             </div>
 
-            <div className="space-y-6">
+            <div className="space-y-3">
               {contactInfo.map((info, index) => (
                 <div
                   key={index}
-                  className="flex items-start p-6 bg-white/70 border border-[#f1e5c5] rounded-xl shadow-sm hover:shadow-lg transition duration-300"
+                  className="flex items-start p-4 bg-[#faf9f6] border border-[#e5e7eb] rounded-xl hover:border-[#c9a84c] transition-all duration-300"
                 >
-                  <div className="text-[#b89a34] mr-4 mt-1">{info.icon}</div>
+                  <div className="text-[#c9a84c] mr-3 mt-0.5">{info.icon}</div>
                   <div>
-                    <h4 className="font-semibold text-[#a58839] mb-1">{info.title}</h4>
-                    <p className="text-[#6b522e] font-medium">{info.details}</p>
-                    <p className="text-[#b5a177] text-sm">{info.subtitle}</p>
+                    <h4 className="font-semibold text-[#1a1a2e] mb-0.5 text-sm">{info.title}</h4>
+                    <p className="text-[#4b5563] text-sm">{info.details}</p>
+                    <p className="text-[#9ca3af] text-xs mt-0.5">{info.subtitle}</p>
                   </div>
                 </div>
               ))}
@@ -158,10 +143,10 @@ const Contact = () => {
           </div>
 
           {/* Contact Form */}
-          <form ref={formRef} onSubmit={handleSubmit} className="space-y-7 bg-white/70 border border-[#eadca9] rounded-2xl shadow-xl p-10 backdrop-blur-lg">
-            <div className="grid md:grid-cols-2 gap-7">
+          <form ref={formRef} onSubmit={handleSubmit} className="space-y-5 bg-[#faf9f6] border border-[#e5e7eb] rounded-xl p-8">
+            <div className="grid md:grid-cols-2 gap-5">
               <div>
-                <label className="block text-sm font-medium text-[#8e7c38] mb-2">
+                <label className="block text-sm font-semibold text-[#1a1a2e] mb-2">
                   Full Name *
                 </label>
                 <input
@@ -171,11 +156,11 @@ const Contact = () => {
                   value={formData.from_name}
                   onChange={handleChange}
                   placeholder="John Doe"
-                  className="w-full px-4 py-3 border border-[#e7d7a5] rounded-xl bg-white/70 focus:ring-2 focus:ring-yellow-600 focus:border-transparent transition"
+                  className="w-full px-4 py-3 border border-[#e5e7eb] rounded-lg bg-white text-[#1a1a2e] placeholder-[#9ca3af] focus:ring-2 focus:ring-[#c9a84c]/40 focus:border-[#c9a84c] transition-all duration-200 text-sm"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-[#8e7c38] mb-2">
+                <label className="block text-sm font-semibold text-[#1a1a2e] mb-2">
                   Email Address *
                 </label>
                 <input
@@ -185,13 +170,13 @@ const Contact = () => {
                   value={formData.from_email}
                   onChange={handleChange}
                   placeholder="john@company.com"
-                  className="w-full px-4 py-3 border border-[#e7d7a5] rounded-xl bg-white/70 focus:ring-2 focus:ring-yellow-600 focus:border-transparent transition"
+                  className="w-full px-4 py-3 border border-[#e5e7eb] rounded-lg bg-white text-[#1a1a2e] placeholder-[#9ca3af] focus:ring-2 focus:ring-[#c9a84c]/40 focus:border-[#c9a84c] transition-all duration-200 text-sm"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-[#8e7c38] mb-2">
+              <label className="block text-sm font-semibold text-[#1a1a2e] mb-2">
                 Company Name
               </label>
               <input
@@ -200,12 +185,12 @@ const Contact = () => {
                 value={formData.company}
                 onChange={handleChange}
                 placeholder="Your Company"
-                className="w-full px-4 py-3 border border-[#e7d7a5] rounded-xl bg-white/70 focus:ring-2 focus:ring-yellow-600 focus:border-transparent transition"
+                className="w-full px-4 py-3 border border-[#e5e7eb] rounded-lg bg-white text-[#1a1a2e] placeholder-[#9ca3af] focus:ring-2 focus:ring-[#c9a84c]/40 focus:border-[#c9a84c] transition-all duration-200 text-sm"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-[#8e7c38] mb-2">
+              <label className="block text-sm font-semibold text-[#1a1a2e] mb-2">
                 Message *
               </label>
               <textarea
@@ -215,15 +200,15 @@ const Contact = () => {
                 value={formData.message}
                 onChange={handleChange}
                 placeholder="Tell us about your requirements or questions..."
-                className="w-full px-4 py-3 border border-[#e7d7a5] rounded-xl bg-white/70 focus:ring-2 focus:ring-yellow-600 focus:border-transparent transition resize-none"
+                className="w-full px-4 py-3 border border-[#e5e7eb] rounded-lg bg-white text-[#1a1a2e] placeholder-[#9ca3af] focus:ring-2 focus:ring-[#c9a84c]/40 focus:border-[#c9a84c] transition-all duration-200 resize-none text-sm"
               />
             </div>
 
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-[#d8bb67] to-[#9d7d2d] text-white px-8 py-4 rounded-xl font-semibold hover:from-[#cdb256] hover:to-[#8c6c19] transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center justify-center"
+              className="w-full bg-[#1a1a2e] text-white px-6 py-3.5 rounded-lg font-semibold hover:bg-[#c9a84c] transition-all duration-300 flex items-center justify-center text-sm tracking-wide"
             >
-              <Send className="h-5 w-5 mr-2" />
+              <Send className="h-4 w-4 mr-2" />
               Send Message
             </button>
           </form>

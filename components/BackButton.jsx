@@ -39,15 +39,14 @@ export default function BackButton({
         group
         inline-flex items-center gap-2
         px-4 py-2.5
-        text-[#5a5545] hover:text-[#23221d]
-        bg-white/60 hover:bg-white
-        border border-[#e4dcc8] hover:border-[#c2ab72]
-        rounded-full
+        text-[#1a1a2e] hover:text-[#c9a84c]
+        bg-white hover:bg-white
+        border border-[#e5e7eb] hover:border-[#c9a84c]
+        rounded-lg
         font-medium text-sm tracking-wide
         shadow-sm hover:shadow-md
         transition-all duration-300 ease-out
-        backdrop-blur-sm
-        focus:outline-none focus:ring-2 focus:ring-[#c2ab72]/50 focus:ring-offset-2
+        focus:outline-none focus:ring-2 focus:ring-[#c9a84c]/40 focus:ring-offset-2
         active:scale-95
         ${className}
       `}

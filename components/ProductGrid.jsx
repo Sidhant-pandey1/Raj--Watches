@@ -42,17 +42,16 @@ function SingleWatch({ watch }) {
   return (
     <Link
       href={`/watches/product/${watch.id}`}
-      className="group product-card bg-white rounded-2xl shadow-lg hover:shadow-2xl hover:scale-[1.04] transition-all duration-500 overflow-hidden flex flex-col border-2 border-transparent hover:border-[#c2ab72] cursor-pointer relative"
+      className="group product-card bg-white rounded-xl border border-[#e5e7eb] hover:border-[#c9a84c] hover:shadow-xl hover:-translate-y-1 transition-all duration-400 overflow-hidden flex flex-col cursor-pointer relative"
     >
       {/* Wishlist Icon */}
       <button
         type="button"
         aria-label="Add to wishlist"
-        className={`absolute top-3 right-3 z-20 p-2 rounded-full shadow-md transition ${
-          isWishlisted
-            ? "bg-[#c2ab72] text-white"
-            : "bg-white text-[#c2ab72] hover:bg-[#c2ab72] hover:text-white"
-        }`}
+        className={`absolute top-3 right-3 z-20 p-2 rounded-full shadow-md transition-all duration-300 ${isWishlisted
+          ? "bg-[#c9a84c] text-white"
+          : "bg-white text-[#c9a84c] hover:bg-[#c9a84c] hover:text-white border border-[#e5e7eb]"
+          }`}
         onClick={(e) => {
           e.preventDefault(); // prevent link navigation
           toggleWishlist(watch);
@@ -60,13 +59,13 @@ function SingleWatch({ watch }) {
       >
         <Heart
           size={18}
-          fill={isWishlisted ? "#c2ab72" : "none"}
-          color={isWishlisted ? "#fff" : "#c2ab72"}
+          fill={isWishlisted ? "#fff" : "none"}
+          color={isWishlisted ? "#fff" : "#c9a84c"}
         />
       </button>
 
       {/* Images with slider */}
-      <div className="relative overflow-hidden h-64 rounded-t-2xl bg-[#c2ab72]/10">
+      <div className="relative overflow-hidden h-64 bg-[#faf9f6]">
         {images.map((img, index) => (
           <Image
             key={index}
@@ -74,34 +73,32 @@ function SingleWatch({ watch }) {
             alt={watch.name}
             fill
             sizes="(max-width: 768px) 100vw, 25vw"
-            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
-              index === currentIndex ? "opacity-100" : "opacity-0 pointer-events-none"
-            }`}
+            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${index === currentIndex ? "opacity-100" : "opacity-0 pointer-events-none"
+              }`}
           />
         ))}
       </div>
 
       {/* Product Info */}
       <div className="p-5 flex flex-col gap-2">
-        <p className="text-xs font-semibold text-[#c2ab72] uppercase">{watch.brand}</p>
-        <h3 className="text-lg font-bold text-[#232323] truncate">{watch.name}</h3>
+        <p className="text-xs font-semibold text-[#c9a84c] uppercase tracking-wide">{watch.brand}</p>
+        <h3 className="text-base font-bold text-[#1a1a2e] truncate">{watch.name}</h3>
 
         {/* Ratings */}
         <div className="flex items-center gap-1 mt-1">
           {[...Array(5)].map((_, i) => (
             <Star
               key={i}
-              className={`w-4 h-4 ${
-                i < rating ? "text-[#c2ab72] fill-[#c2ab72]" : "text-gray-300"
-              }`}
+              className={`w-4 h-4 ${i < rating ? "text-[#c9a84c] fill-[#c9a84c]" : "text-[#d1d5db]"
+                }`}
             />
           ))}
-          <span className="text-xs text-gray-500 ml-1">{rating.toFixed(1)}</span>
+          <span className="text-xs text-[#6b7280] ml-1">{rating.toFixed(1)}</span>
         </div>
 
         {/* Price and Add to Cart button */}
         <div className="flex items-center justify-between mt-3">
-          <span className="font-bold text-xl flex items-center text-[#232323]">
+          <span className="font-bold text-xl flex items-center text-[#1a1a2e]">
             <RupeeSign className="w-5 h-5 mr-1" />
             {formatPrice(original)}
           </span>
@@ -112,7 +109,7 @@ function SingleWatch({ watch }) {
               // Add to cart action
               console.log(`Added ${watch.id} to cart`);
             }}
-            className="flex items-center bg-[#c2ab72] text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-[#232323] hover:text-[#c2ab72] hover:ring-2 hover:ring-[#c2ab72] transition shadow-md"
+            className="flex items-center bg-[#1a1a2e] text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-[#c9a84c] transition-all duration-300 shadow-sm"
           >
             <ShoppingBag size={16} className="mr-2" /> Add
           </button>
@@ -130,8 +127,8 @@ export default function RandomProductGrid({ watches = [] }) {
   const selected = shuffled.slice(0, 4);
 
   return (
-    <div className="py-12 px-4 bg-gray-50">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+    <div className="py-12 px-4 bg-[#faf9f6]">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {selected.map((watch) => (
           <SingleWatch key={watch.id} watch={watch} />
         ))}

@@ -13,54 +13,24 @@ export default function ProductNavigation() {
             />
 
             {/* Quick Action Icons */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
                 <a
                     href="/wishlist"
-                    className="
-            flex items-center justify-center
-            w-10 h-10
-            text-[#5a5545] hover:text-[#c2ab72]
-            bg-white/60 hover:bg-white
-            border border-[#e4dcc8] hover:border-[#c2ab72]
-            rounded-full
-            shadow-sm hover:shadow-md
-            transition-all duration-300
-            backdrop-blur-sm
-          "
+                    className="flex items-center justify-center w-10 h-10 text-[#1a1a2e] hover:text-[#c9a84c] bg-white border border-[#e5e7eb] hover:border-[#c9a84c] rounded-lg shadow-sm hover:shadow-md transition-all duration-300"
                     aria-label="Wishlist"
                 >
                     <Heart size={20} />
                 </a>
                 <a
                     href="/account"
-                    className="
-            flex items-center justify-center
-            w-10 h-10
-            text-[#5a5545] hover:text-[#c2ab72]
-            bg-white/60 hover:bg-white
-            border border-[#e4dcc8] hover:border-[#c2ab72]
-            rounded-full
-            shadow-sm hover:shadow-md
-            transition-all duration-300
-            backdrop-blur-sm
-          "
+                    className="flex items-center justify-center w-10 h-10 text-[#1a1a2e] hover:text-[#c9a84c] bg-white border border-[#e5e7eb] hover:border-[#c9a84c] rounded-lg shadow-sm hover:shadow-md transition-all duration-300"
                     aria-label="User Account"
                 >
                     <User size={20} />
                 </a>
                 <a
                     href="/cart"
-                    className="
-            flex items-center justify-center
-            w-10 h-10
-            text-[#5a5545] hover:text-[#c2ab72]
-            bg-white/60 hover:bg-white
-            border border-[#e4dcc8] hover:border-[#c2ab72]
-            rounded-full
-            shadow-sm hover:shadow-md
-            transition-all duration-300
-            backdrop-blur-sm
-          "
+                    className="flex items-center justify-center w-10 h-10 text-[#1a1a2e] hover:text-[#c9a84c] bg-white border border-[#e5e7eb] hover:border-[#c9a84c] rounded-lg shadow-sm hover:shadow-md transition-all duration-300"
                     aria-label="Shopping Cart"
                 >
                     <ShoppingBag size={20} />

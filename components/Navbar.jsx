@@ -1,20 +1,47 @@
 "use client";
 
 import Link from "next/link";
-import { ShoppingBag, Search, User, Heart, Menu, X } from "lucide-react";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import useWishlist from "./useWishlist"; // <- make sure this file exists (components/useWishlist.js)
+import { ShoppingBag, Search, Heart, Menu, X } from "lucide-react";
+import { useState, useEffect } from "react";
+import { useRouter, usePathname } from "next/navigation";
+import useWishlist from "./useWishlist"; 
 
-function Navbar() {
+export default function Navbar() {
   const [searchQuery, setSearchQuery] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
+  
+  const [scrolled, setScrolled] = useState(false);
 
   // wishlist hook
   const { count } = useWishlist();
 
-  // Updated nav links for your requested categories
+  const isHome = pathname === "/";
+  const isSolid = !isHome || scrolled || menuOpen;
+
+  useEffect(() => {
+    // Scroll handler
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+    };
+    window.addEventListener("scroll", handleScroll);
+    handleScroll();
+
+    // Clear filters from session storage when on home page
+    if (pathname === "/") {
+      try {
+        Object.keys(sessionStorage).forEach((key) => {
+          if (key.startsWith("rw-filters-") || key.startsWith("rw-page-")) {
+            sessionStorage.removeItem(key);
+          }
+        });
+      } catch (e) {}
+    }
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [pathname]);
+
   const navLinks = [
     { name: "Men", href: "/watches/category/men" },
     { name: "Women", href: "/watches/category/women" },
@@ -27,53 +54,53 @@ function Navbar() {
     e.preventDefault();
     const query = searchQuery.trim();
     if (!query) return;
-    router.push(`/watches/category/all?modelNumber=${encodeURIComponent(query)}`);
+    router.push(`/watches/category/all?search=${encodeURIComponent(query)}`);
     setSearchQuery("");
     if (menuOpen) setMenuOpen(false);
   };
 
   return (
-    <header className="bg-white/90 sticky top-0 z-50 shadow-lg border-b border-gray-300 backdrop-blur-md">
-      <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center px-6 py-3 space-y-3 sm:space-y-0">
-        {/* Left: Logo and Mobile Menu Toggle */}
-        <div className="flex items-center justify-between w-full sm:w-auto">
-          <div className="flex items-center space-x-4">
-            <button
-              className="sm:hidden text-gray-700 hover:text-gray-900 p-1 rounded-md transition"
-              onClick={() => setMenuOpen(!menuOpen)}
-              aria-label="Toggle menu"
-            >
-              {menuOpen ? <X size={28} /> : <Menu size={28} />}
-            </button>
+    <header className={`${isHome ? "fixed" : "sticky"} top-0 z-50 w-full transition-colors duration-300 ${isSolid ? "bg-white shadow-sm" : "bg-gradient-to-b from-black/60 to-transparent"}`}>
+      {/* Top bar: Logo + Search + Icons */}
+      <div className="max-w-7xl mx-auto flex items-center justify-between px-5 sm:px-8 py-3.5 gap-4">
+        {/* Left: Hamburger + Logo */}
+        <div className="flex items-center gap-3 flex-shrink-0">
+          <button
+            className={`lg:hidden p-1.5 transition-colors duration-200 cursor-pointer ${isSolid ? "text-[#1a1a2e] hover:text-[#c9a84c]" : "text-white hover:text-[#c9a84c]"}`}
+            onClick={() => setMenuOpen(!menuOpen)}
+            aria-label="Toggle menu"
+          >
+            {menuOpen ? <X size={22} /> : <Menu size={22} />}
+          </button>
 
-            <Link
-              href="/"
-              className="text-3xl font-extrabold tracking-widest text-[#c2ab72] hover:text-[#bfa666] transition"
-              aria-label="Raj & Raj Watches Logo"
-            >
-              RAJ WATCHES
-            </Link>
-          </div>
+          <Link
+            href="/"
+            className={`text-xl sm:text-2xl font-semibold tracking-[0.15em] transition-colors duration-300 uppercase ${isSolid ? "text-[#1a1a2e] hover:text-[#c9a84c]" : "text-white hover:text-[#c9a84c] drop-shadow-md"}`}
+            style={{ fontFamily: "'Outfit', sans-serif" }}
+            aria-label="Raj Watches Logo"
+          >
+            RAJ WATCHES
+          </Link>
         </div>
 
-        {/* Center: Search Bar - Redesigned with integrated button */}
+        {/* Center: Search Bar */}
         <form
           onSubmit={handleSearch}
-          className="relative w-full sm:w-1/2 md:max-w-lg flex items-center"
+          className="relative flex-1 max-w-lg hidden sm:flex items-center"
           role="search"
         >
-          <div className="relative w-full flex items-center bg-gray-100 rounded-full border border-gray-300 overflow-hidden focus-within:ring-2 focus-within:ring-[#c2ab72] transition">
+          <div className={`relative w-full flex items-center border rounded-lg overflow-hidden transition-all duration-300 ${isSolid ? "bg-[#faf9f6] border-[#e5e7eb] focus-within:border-[#c9a84c] focus-within:ring-1 focus-within:ring-[#c9a84c]/30" : "bg-white/10 border-white/20 focus-within:border-white focus-within:bg-white/20 backdrop-blur-sm"}`}>
             <input
               type="search"
-              placeholder="Search watches by model number..."
+              placeholder="Search by model number..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="flex-1 bg-transparent text-gray-900 py-2.5 pl-4 pr-2 text-sm focus:outline-none"
+              className={`flex-1 bg-transparent py-2.5 px-4 text-sm font-normal tracking-wide focus:outline-none ${isSolid ? "text-[#1a1a2e] placeholder-[#9ca3af]" : "text-white placeholder-white/70"}`}
               aria-label="Search watches by model number"
             />
             <button
               type="submit"
-              className="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-[#c2ab72] text-[#232323] rounded-full mr-0.5 hover:bg-[#b89f56] transition"
+              className={`flex-shrink-0 w-10 h-10 flex items-center justify-center transition-colors duration-200 cursor-pointer ${isSolid ? "text-[#6b7280] hover:text-[#c9a84c]" : "text-white hover:text-[#c9a84c]"}`}
               aria-label="Submit search"
             >
               <Search size={18} />
@@ -81,36 +108,55 @@ function Navbar() {
           </div>
         </form>
 
-        {/* Right: Icons for desktop */}
-        <div className="hidden sm:flex items-center space-x-8 text-[#232323]">
-          <Link href="/wishlist" className="relative inline-flex items-center hover:text-[#c2ab72]" aria-label="Wishlist">
-            <Heart size={22} />
+        {/* Right: Icons */}
+        <div className="flex items-center gap-5 flex-shrink-0">
+          <Link href="/wishlist" className={`relative inline-flex items-center transition-colors duration-200 ${isSolid ? "text-[#1a1a2e] hover:text-[#c9a84c]" : "text-white hover:text-[#c9a84c]"}`} aria-label="Wishlist">
+            <Heart size={21} className="stroke-[1.5px]" />
             {count > 0 && (
-              <span className="absolute -top-2 -right-3 inline-flex items-center justify-center px-2 py-0.5 text-xs rounded-full bg-[#c2ab72] text-white font-semibold">
+              <span className={`absolute -top-2 -right-2.5 inline-flex items-center justify-center w-[18px] h-[18px] text-[10px] rounded-full font-semibold ${isSolid ? "bg-[#c9a84c] text-white" : "bg-white text-[#1a1a2e]"}`}>
                 {count}
               </span>
             )}
           </Link>
 
-          {/* <Link href="/account" className="hover:text-[#c2ab72]" aria-label="User Account">
-            <User size={22} />
-          </Link> */}
-
-          <Link href="/cart" className="hover:text-[#c2ab72]" aria-label="Shopping Cart">
-            <ShoppingBag size={22} />
+          <Link href="/cart" className={`transition-colors duration-200 ${isSolid ? "text-[#1a1a2e] hover:text-[#c9a84c]" : "text-white hover:text-[#c9a84c]"}`} aria-label="Shopping Cart">
+            <ShoppingBag size={21} className="stroke-[1.5px]" />
           </Link>
         </div>
       </div>
 
+      {/* Mobile Search Bar */}
+      <div className={`sm:hidden px-5 pb-3 transition-opacity duration-300 ${!isSolid ? "hidden" : "block"}`}>
+        <form onSubmit={handleSearch} role="search">
+          <div className="relative w-full flex items-center bg-[#faf9f6] border border-[#e5e7eb] rounded-lg overflow-hidden focus-within:border-[#c9a84c] transition-all duration-300">
+            <input
+              type="search"
+              placeholder="Search brand or model..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="flex-1 bg-transparent text-[#1a1a2e] py-2.5 px-4 text-sm font-normal tracking-wide focus:outline-none placeholder-[#9ca3af]"
+              aria-label="Search watches by brand or model number"
+            />
+            <button
+              type="submit"
+              className="flex-shrink-0 w-10 h-10 flex items-center justify-center text-[#6b7280] hover:text-[#c9a84c] transition-colors duration-200 cursor-pointer"
+              aria-label="Submit search"
+            >
+              <Search size={18} />
+            </button>
+          </div>
+        </form>
+      </div>
+
       {/* Mobile Menu */}
       {menuOpen && (
-        <nav className="sm:hidden bg-white/95 backdrop-blur-md border-t border-gray-300 shadow-sm">
-          <ul className="flex flex-col space-y-2 py-3 px-6 font-semibold text-gray-800">
+        <nav className="lg:hidden bg-white border-t border-[#e5e7eb]">
+          <ul className="flex flex-col py-2 px-5">
             {navLinks.map((link) => (
               <li key={link.name}>
                 <Link
                   href={link.href}
-                  className="block px-3 py-2 rounded hover:bg-[#c2ab72] hover:text-white transition"
+                  className="block py-3 text-sm font-medium tracking-wide text-[#1a1a2e] hover:text-[#c9a84c] transition-colors duration-200 border-b border-[#f3f4f6]"
                   onClick={() => setMenuOpen(false)}
                 >
                   {link.name}
@@ -120,7 +166,7 @@ function Navbar() {
             <li>
               <Link
                 href="/wishlist"
-                className="block px-3 py-2 rounded hover:bg-[#c2ab72] hover:text-white transition"
+                className="block py-3 text-sm font-medium tracking-wide text-[#1a1a2e] hover:text-[#c9a84c] transition-colors duration-200"
                 onClick={() => setMenuOpen(false)}
               >
                 Wishlist {count > 0 ? ` (${count})` : ""}
@@ -131,13 +177,13 @@ function Navbar() {
       )}
 
       {/* Desktop Nav Links */}
-      <div className="hidden sm:block bg-gray-100 border-t border-gray-300">
-        <ul className="flex justify-center space-x-12 py-3 text-base font-semibold text-[#232323]">
+      <div className={`hidden lg:block transition-colors duration-300 ${isSolid ? "bg-[#faf9f6] border-t border-[#e5e7eb]" : "bg-transparent border-t border-white/20"}`}>
+        <ul className="flex justify-center gap-10 py-3 max-w-7xl mx-auto">
           {navLinks.map((link) => (
             <li key={link.name}>
               <Link
                 href={link.href}
-                className="hover:text-[#c2ab72] transition-colors border-b-2 border-transparent hover:border-[#c2ab72] pb-1"
+                className={`relative text-[13px] font-semibold tracking-[0.1em] uppercase transition-colors duration-300 pb-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[2px] after:bg-[#c9a84c] after:transition-all after:duration-300 hover:after:w-full ${isSolid ? "text-[#4b5563] hover:text-[#1a1a2e]" : "text-white/90 hover:text-white drop-shadow-sm"}`}
               >
                 {link.name}
               </Link>
@@ -148,5 +194,3 @@ function Navbar() {
     </header>
   );
 }
-
-export default Navbar;

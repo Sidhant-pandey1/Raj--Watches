@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "seed": "node prisma/seed.js",
     "db" : "cd prisma && npx prisma studio && cd .."
   },
   "dependencies": {

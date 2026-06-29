@@ -17,19 +17,26 @@ export async function GET(request) {
 
     const brandsString = searchParams.get("brands");
     const sort = searchParams.get("sort");
+    const searchQuery = searchParams.get("search");
     const brands = brandsString ? brandsString.split(",") : [];
 
     const whereClause = {};
 
-    // Category filter (supports multiple categories)
-if (categories.length > 0 && !categories.includes("all")) {
-  whereClause.OR = categories.map((cat) => ({
-    category: {
-      equals: cat,
-      mode: "insensitive",
-    },
-  }));
-}
+    // Search query filter (matches brand or modelNumber)
+    if (searchQuery) {
+      whereClause.OR = [
+        { brand: { contains: searchQuery, mode: "insensitive" } },
+        { modelNumber: { contains: searchQuery, mode: "insensitive" } }
+      ];
+    }
+
+    // Category filter (supports both single and multiple categories)
+    if (categories.length > 0 && !categories.includes("all")) {
+      whereClause.category = {
+        in: categories,
+        mode: "insensitive",
+      };
+    }
 
     // Price filter
     if (maxPrice && !isNaN(parseFloat(maxPrice))) {

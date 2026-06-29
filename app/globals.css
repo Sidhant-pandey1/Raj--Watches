@@ -1,100 +1,157 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
 
 :root {
-  --background: #f5f6fa;
-  --foreground: #161619;
-  --accent-gold: #c2ab72;
-  --accent-black: #232323;
-  --accent-gray: #8a8a8a;
-}
-
-/* Swap to a luxury font like Inter or Playfair */
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: 'Inter', 'Playfair Display', Arial, Helvetica, sans-serif;
-  letter-spacing: 0.02em;
-  transition: background 0.3s, color 0.3s;
-}
-
-a, .button, input {
-  transition: all 0.3s cubic-bezier(.25,.8,.25,1);
-}
-
-h1, h2, h3, h4 {
-  font-family: 'Playfair Display', serif;
-  color: var(--accent-black);
-}
-
-button, .btn {
-  background: var(--accent-gold);
-  color: #fff;
-  font-weight: 600;
-  border-radius: 999px;
-  box-shadow: 0 3px 15px rgba(194,171,114,0.07);
-  border: none;
-  padding: 0.75em 2.5em;
-}
-
-/* Gold underline on hover for links */
-a:hover, .nav-link:hover {
-  color: var(--accent-gold);
-  border-bottom: 2px solid var(--accent-gold);
-  text-shadow: 0 2px 12px #c2ab7257;
-}
-
-/* Subtle shadow for cards */
-.card, .product-card {
-  box-shadow: 0 16px 32px 0 rgba(60,60,60,0.08);
-  border-radius: 20px;
-}
-
-/* Dark mode */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #171619;
-    --foreground: #f5f6fa;
-  }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* @import "tailwindcss";
-
-:root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #1a1a2e;
+  --accent-black: #1a1a2e;
+  --accent-gray-dark: #2d2d3f;
+  --accent-gray-light: #6b7280;
+  --accent-gold: #c9a84c;
+  --accent-gold-dark: #a88b3a;
+  --border-color: #e5e7eb;
+  --border-color-hover: #1a1a2e;
+  --bg-ivory: #faf9f6;
+  --bg-warm: #f5f3ef;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-} */
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  letter-spacing: 0.01em;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Outfit', 'Inter', sans-serif;
+  color: var(--accent-black);
+  letter-spacing: -0.01em;
+  font-weight: 600;
+}
+
+/* Custom luxury variables / helper utilities */
+.bg-luxury-cream {
+  background-color: #ffffff;
+}
+.bg-luxury-ivory {
+  background-color: var(--bg-ivory);
+}
+.text-luxury-charcoal {
+  color: #1a1a2e;
+}
+.text-luxury-charcoal-light {
+  color: #6b7280;
+}
+.text-luxury-gold {
+  color: #c9a84c;
+}
+.text-luxury-gold-dark {
+  color: #a88b3a;
+}
+.border-luxury-border {
+  border-color: #e5e7eb;
+}
+.border-luxury-gold {
+  border-color: #c9a84c;
+}
+
+/* Premium button class — primary (filled) */
+.btn-seiko-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #1a1a2e;
+  color: #ffffff;
+  border: 1.5px solid #1a1a2e;
+  border-radius: 4px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 13px 36px;
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+.btn-seiko-primary:hover {
+  background-color: #c9a84c;
+  border-color: #c9a84c;
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(201, 168, 76, 0.25);
+}
+
+/* Premium button class — secondary (outlined) */
+.btn-seiko-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff;
+  color: #1a1a2e;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 4px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 13px 36px;
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+.btn-seiko-secondary:hover {
+  border-color: #c9a84c;
+  color: #c9a84c;
+  transform: translateY(-1px);
+}
+
+/* Spinners and transitions */
+.luxury-spinner {
+  width: 28px;
+  height: 28px;
+  border: 2px solid rgba(26, 26, 46, 0.1);
+  border-left-color: #c9a84c;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Fade-in animation for sections */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Custom scrollbar for sidebar filters */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 4px;
+}

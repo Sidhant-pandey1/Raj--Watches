@@ -2,26 +2,33 @@ import prisma from "@/lib/prisma";
 import LuxeButtons from "@/components/LuxeButtons";
 import Gallery from "@/components/Gallery";
 import ProductNavigation from "@/components/ProductNavigation";
+import { Cinzel, Montserrat } from "next/font/google";
+
+const cinzel = Cinzel({
+  subsets: ["latin"],
+  weight: ["400", "600", "700"],
+});
+
+const montserrat = Montserrat({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+});
 
 /**
- * ProductPage - server component
+ * ProductPage – Server Component
  */
 export default async function ProductPage({ params }) {
-  // params is a Promise in Next 15 – await it first
   const { id: rawId } = await params;
 
-  if (!rawId) {
-    throw new Error("Invalid product id");
-  }
+  if (!rawId) throw new Error("Invalid product id");
 
-  // Watch.id is String in schema.prisma
   const product = await prisma.watch.findUnique({
     where: { id: rawId },
   });
 
   if (!product) {
     return (
-      <div className="p-10 text-center text-red-600 font-semibold">
+      <div className="min-h-screen flex items-center justify-center text-red-600 font-semibold">
         Product not found.
       </div>
     );
@@ -30,9 +37,10 @@ export default async function ProductPage({ params }) {
   const imageUrls = Array.isArray(product.images)
     ? product.images.filter(Boolean)
     : [];
-  const DEBUG_LOCAL_IMAGE =
-    "/mnt/data/Screenshot 2025-11-24 at 15.32.07.png";
-  const galleryImages = imageUrls.length ? imageUrls : [DEBUG_LOCAL_IMAGE];
+
+  const galleryImages = imageUrls.length
+    ? imageUrls
+    : ["/mnt/data/Screenshot 2025-11-24 at 15.32.07.png"];
 
   function highlight(label, ...keys) {
     const desc = product?.description || "";
@@ -50,23 +58,11 @@ export default async function ProductPage({ params }) {
   const highlights = [
     { label: "Brand", value: product.brand },
     { label: "Gender", value: highlight("Gender", "gender") },
-    {
-      label: "Strap Material",
-      value: highlight("Strap Material", "strap material"),
-    },
-    {
-      label: "Strap Color",
-      value: highlight("Strap Color", "strap color"),
-    },
-    {
-      label: "Glass Material",
-      value: highlight("Glass Material", "glass material"),
-    },
-    {
-      label: "Warranty",
-      value: highlight("Warranty", "warranty period", "warranty detail"),
-    },
-    { label: "Dial Color", value: highlight("Dial Color", "dial color") },
+    { label: "Strap Material", value: highlight("Strap Material", "strap material") },
+    { label: "Strap Color", value: highlight("Strap Color", "strap color") },
+    { label: "Glass", value: highlight("Glass Material", "glass material") },
+    { label: "Warranty", value: highlight("Warranty", "warranty") },
+    { label: "Dial", value: highlight("Dial Color", "dial color") },
     { label: "Movement", value: highlight("Movement", "movement") },
   ].filter((h) => h.value);
 
@@ -78,62 +74,73 @@ export default async function ProductPage({ params }) {
     }).format(value);
 
   return (
-    <div className="bg-[#f6f3ee] min-h-screen w-full flex flex-col py-0">
-      {/* Top Navigation Bar */}
-      <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 xl:px-12 pt-6">
+    <div
+      className={`relative min-h-screen bg-[#f6f3ed] overflow-x-hidden ${montserrat.className}`}
+    >
+      {/* Ambient Background */}
+      <div className="fixed inset-0 pointer-events-none">
+        <div className="absolute -top-32 -left-32 w-[500px] h-[500px] bg-[#b89f56]/10 rounded-full blur-[120px]" />
+        <div className="absolute bottom-0 right-0 w-[420px] h-[520px] bg-[#a88e45]/10 rounded-full blur-[120px]" />
+      </div>
+
+      {/* Navigation */}
+      <div className="relative z-10 max-w-[1500px] mx-auto px-6 h-16 pt-4 flex items-center">
         <ProductNavigation />
       </div>
 
-      {/* Main Content */}
-      <div className="w-full flex flex-col lg:flex-row max-w-[1600px] mx-auto px-0 pt-4 lg:pt-8 gap-8 lg:gap-12">
+      {/* Content */}
+      <div className="relative z-10 max-w-[1400px] mx-auto px-6 py-10 lg:py-0 lg:h-[calc(100vh-4rem)] flex flex-col lg:flex-row items-center gap-12">
+        
         {/* Gallery */}
-        <div className="flex-1 flex flex-col items-center xl:items-end pl-0 xl:pl-36">
-          <Gallery images={galleryImages} productName={product.name} />
+        <div className="w-full lg:w-[45%] flex justify-center lg:justify-end">
+          <div className="w-full max-w-[520px] rounded-3xl overflow-hidden shadow-[0_30px_70px_-40px_rgba(0,0,0,0.35)]">
+            <Gallery images={galleryImages} productName={product.name} />
+          </div>
         </div>
 
-        {/* Product details */}
-        <div className="flex-1 flex flex-col justify-center px-6 xl:pl-0 xl:pr-28">
+        {/* Details */}
+        <div className="w-full lg:w-[55%] flex flex-col justify-center max-h-[640px] lg:overflow-y-auto lg:pr-4 scrollbar-thin scrollbar-thumb-[#b89f56]/20">
+          
+          {/* Brand */}
+          <span className="uppercase text-[0.7rem] tracking-[0.3em] font-semibold text-[#b89f56] mb-3">
+            {product.brand}
+          </span>
+
+          {/* Title */}
           <h1
-            className="font-serif text-[2.2rem] sm:text-[2.7rem] xl:text-5xl font-extrabold text-[#23221d] mt-2 mb-6 leading-tight tracking-tight"
-            style={{ letterSpacing: "-0.015em", lineHeight: "1.09" }}
+            className={`${cinzel.className} text-[2.7rem] lg:text-[3.8rem] leading-tight font-semibold text-[#23221d]`}
           >
             {product.name}
           </h1>
 
-          <div className="flex items-center gap-6 sm:gap-8 mb-8">
-            <span className="uppercase font-sans text-base sm:text-lg font-bold tracking-widest text-[#b89f56]">
-              {product.brand}
-            </span>
-            <span className="text-[1.8rem] sm:text-[2.2rem] font-extrabold text-[#23221d] pt-1">
-              {formatPrice(product.price)}
-            </span>
+          {/* Price */}
+          <p
+            className={`${cinzel.className} mt-3 text-[1.6rem] font-semibold text-[#3a382f] opacity-90`}
+          >
+            {formatPrice(product.price)}
+          </p>
+
+          {/* Divider */}
+          <div className="my-6 h-px w-20 bg-[#b89f56]/40" />
+
+          {/* Highlights */}
+          <div className="grid grid-cols-2 gap-x-6 gap-y-4 mb-8">
+            {highlights.slice(0, 6).map((h, idx) => (
+              <div key={idx} className="flex flex-col">
+                <span className="text-[0.65rem] uppercase tracking-widest text-[#9f946c] font-semibold">
+                  {h.label}
+                </span>
+                <span className="text-sm font-medium text-[#23221d]">
+                  {h.value}
+                </span>
+              </div>
+            ))}
           </div>
 
-          <div className="bg-[#fff9ed] border border-[#ead199] rounded-2xl py-7 sm:py-9 px-6 sm:px-9 shadow mb-10 sm:mb-12 max-w-2xl">
-            <h2 className="text-[1.1rem] sm:text-[1.25rem] font-serif font-bold text-[#ac9247] mb-4 sm:mb-5 tracking-widest">
-              Product Highlights
-            </h2>
-            <table className="w-full text-[0.95rem] sm:text-[1.09rem] font-medium">
-              <tbody>
-                {highlights.map((h, idx) => (
-                  <tr
-                    key={idx}
-                    className="border-b border-[#eedfa2]/40 last:border-0"
-                  >
-                    <td
-                      className="pr-3 py-2.5 sm:py-3 text-[#7f7755] w-40 sm:w-56"
-                      style={{ fontWeight: 540 }}
-                    >
-                      {h.label}
-                    </td>
-                    <td className="pl-3 py-2.5 sm:py-3 text-[#23221d]">{h.value}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          {/* CTA */}
+          <div className="pt-2">
+            <LuxeButtons product={product} />
           </div>
-
-          <LuxeButtons product={product} />
         </div>
       </div>
     </div>

@@ -160,8 +160,7 @@ export default function CheckoutPage() {
       const orderData = await orderResponse.json();
       if (!orderResponse.ok) {
         setMessage(
-          `Order creation failed: ${
-            orderData.message || orderData.error || "unknown"
+          `Order creation failed: ${orderData.message || orderData.error || "unknown"
           }`
         );
         setLoading(false);
@@ -207,8 +206,7 @@ export default function CheckoutPage() {
             if (!buyNow) localStorage.removeItem("cart");
           } else {
             setMessage(
-              `❌ Verification failed: ${
-                verificationData.message || "Payment not secure."
+              `❌ Verification failed: ${verificationData.message || "Payment not secure."
               }`
             );
           }
@@ -219,7 +217,7 @@ export default function CheckoutPage() {
           email: customerEmail,
           contact: phoneNumber,
         },
-        theme: { color: "#1E293B" },
+        theme: { color: "#1a1a2e" },
       };
 
       const rzp = new window.Razorpay(options);
@@ -242,9 +240,9 @@ export default function CheckoutPage() {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white flex justify-center items-start py-12 px-4">
-      <div className="w-full max-w-3xl bg-white shadow-xl rounded-3xl p-10 border border-gray-100">
-        <h1 className="text-3xl font-bold text-gray-900 text-center mb-10">
+    <div className="min-h-screen bg-[#faf9f6] flex justify-center items-start py-12 px-4">
+      <div className="w-full max-w-3xl bg-white shadow-sm border border-[#e5e7eb] rounded-xl p-8 sm:p-10">
+        <h1 className="text-2xl sm:text-3xl font-bold text-[#1a1a2e] text-center mb-10" style={{ fontFamily: "'Outfit', sans-serif" }}>
           Secure Checkout
         </h1>
 
@@ -253,9 +251,9 @@ export default function CheckoutPage() {
             {products.map((product, idx) => (
               <div
                 key={product.id ?? `prod-${idx}`}
-                className="flex flex-col sm:flex-row gap-8 mb-8 items-center"
+                className="flex flex-col sm:flex-row gap-6 sm:gap-8 mb-8 items-center"
               >
-                <div className="relative w-56 h-56 sm:w-64 sm:h-64 flex-shrink-0 rounded-xl overflow-hidden border border-gray-200 shadow-md">
+                <div className="relative w-48 h-48 sm:w-56 sm:h-56 flex-shrink-0 rounded-xl overflow-hidden border border-[#e5e7eb]">
                   <Image
                     src={product.images?.[0] || "/images/RajWatches.png"}
                     alt={product.name}
@@ -264,16 +262,16 @@ export default function CheckoutPage() {
                   />
                 </div>
                 <div className="flex-1 text-center sm:text-left">
-                  <h2 className="text-2xl font-semibold text-gray-800">
+                  <h2 className="text-xl font-semibold text-[#1a1a2e]">
                     {product.name}
                   </h2>
-                  <p className="text-gray-600 mt-2 text-xl font-medium">
+                  <p className="text-[#6b7280] mt-2 text-lg">
                     ₹{unitPriceFor(product).toLocaleString()}
                   </p>
-                  <p className="mt-2 text-lg text-gray-700">
+                  <p className="mt-2 text-base text-[#4b5563]">
                     Quantity: {product.qty || 1}
                   </p>
-                  <p className="mt-5 text-lg font-semibold text-gray-900">
+                  <p className="mt-4 text-lg font-bold text-[#1a1a2e]">
                     Total: ₹
                     {(
                       unitPriceFor(product) * (product.qty || 1)
@@ -285,13 +283,13 @@ export default function CheckoutPage() {
 
             {/* Grand Total */}
             <div className="w-full my-8 flex justify-end">
-              <div className="text-2xl font-bold text-[#23221d] bg-gray-100 rounded-lg px-6 py-3 shadow">
+              <div className="text-xl font-bold text-[#1a1a2e] bg-[#faf9f6] rounded-lg px-6 py-3 border border-[#e5e7eb]">
                 Grand Total: ₹{grandTotal.toLocaleString()}
               </div>
             </div>
           </>
         ) : (
-          <p className="text-center text-gray-500 mb-6">
+          <p className="text-center text-[#6b7280] mb-6">
             Loading product details...
           </p>
         )}
@@ -305,7 +303,7 @@ export default function CheckoutPage() {
             "pincode",
           ].map((field) => (
             <div key={field}>
-              <label className="block text-gray-700 mb-1 font-medium capitalize">
+              <label className="block text-[#1a1a2e] mb-1.5 font-semibold capitalize text-sm">
                 {field.replace(/([A-Z])/g, " $1")}
               </label>
               <input
@@ -313,8 +311,8 @@ export default function CheckoutPage() {
                   field === "customerEmail"
                     ? "email"
                     : field === "phoneNumber" || field === "pincode"
-                    ? "tel"
-                    : "text"
+                      ? "tel"
+                      : "text"
                 }
                 name={field}
                 value={formData[field]}
@@ -322,7 +320,7 @@ export default function CheckoutPage() {
                 placeholder={`Enter your ${field
                   .replace(/([A-Z])/g, " $1")
                   .toLowerCase()}`}
-                className="w-full border border-gray-300 rounded-xl px-4 py-2 bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900 transition"
+                className="w-full border border-[#e5e7eb] rounded-lg px-4 py-3 bg-white text-[#1a1a2e] placeholder-[#9ca3af] focus:outline-none focus:ring-2 focus:ring-[#c9a84c]/40 focus:border-[#c9a84c] transition-all duration-200 text-sm"
                 required
               />
             </div>
@@ -332,12 +330,12 @@ export default function CheckoutPage() {
         <button
           onClick={handleCheckout}
           disabled={loading || !RAZORPAY_KEY_ID}
-          className="w-full mt-8 py-3 bg-gray-900 text-gray-900 font-semibold rounded-xl hover:bg-gray-800 transition-transform active:scale-95 shadow-lg"
+          className="w-full mt-8 py-3.5 bg-[#1a1a2e] text-white font-semibold rounded-lg hover:bg-[#c9a84c] transition-all duration-300 active:scale-[0.98] shadow-sm text-sm tracking-wide disabled:opacity-50"
         >
           {loading ? "Processing..." : "Checkout and Pay"}
         </button>
 
-        <p className="mt-5 text-center text-gray-700 font-medium">{message}</p>
+        <p className="mt-5 text-center text-[#4b5563] text-sm font-medium">{message}</p>
 
         {!RAZORPAY_KEY_ID && (
           <p className="mt-2 text-center text-red-500 text-sm">
