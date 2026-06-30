@@ -1,7 +1,9 @@
 import prisma from "@/lib/prisma";
-import LuxeButtons from "@/components/LuxeButtons";
-import Gallery from "@/components/Gallery";
-import ProductNavigation from "@/components/ProductNavigation";
+import LuxeButtons from "../../../../components/LuxeButtons";
+import Gallery from "../../../../components/Gallery";
+import Navbar from "../../../../components/Navbar";
+import Footer from "../../../../components/Footer";
+import BackButton from "../../../../components/BackButton";
 import { Cinzel, Montserrat } from "next/font/google";
 
 const cinzel = Cinzel({
@@ -75,74 +77,76 @@ export default async function ProductPage({ params }) {
 
   return (
     <div
-      className={`relative min-h-screen bg-[#f6f3ed] overflow-x-hidden ${montserrat.className}`}
+      className={`relative min-h-screen bg-gray-50 overflow-x-hidden ${montserrat.className}`}
     >
-      {/* Ambient Background */}
-      <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute -top-32 -left-32 w-[500px] h-[500px] bg-[#b89f56]/10 rounded-full blur-[120px]" />
-        <div className="absolute bottom-0 right-0 w-[420px] h-[520px] bg-[#a88e45]/10 rounded-full blur-[120px]" />
-      </div>
+      <Navbar />
 
-      {/* Navigation */}
-      <div className="relative z-10 max-w-[1500px] mx-auto px-6 h-16 pt-4 flex items-center">
-        <ProductNavigation />
-      </div>
-
-      {/* Content */}
-      <div className="relative z-10 max-w-[1400px] mx-auto px-6 py-10 lg:py-0 lg:h-[calc(100vh-4rem)] flex flex-col lg:flex-row items-center gap-12">
-        
-        {/* Gallery */}
-        <div className="w-full lg:w-[45%] flex justify-center lg:justify-end">
-          <div className="w-full max-w-[520px] rounded-3xl overflow-hidden shadow-[0_30px_70px_-40px_rgba(0,0,0,0.35)]">
+      <main className="relative z-10 max-w-[1400px] mx-auto px-6 py-10 lg:py-16 flex flex-col lg:flex-row items-start gap-12">
+        {/* Left Side: Back Button & Gallery */}
+        <div className="w-full lg:w-1/2 flex flex-col gap-6 lg:sticky lg:top-32">
+          <div className="self-start">
+            <BackButton fallbackUrl="/watches/category/all" label="Back to Collection" />
+          </div>
+          
+          <div className="w-full max-w-[600px] mx-auto lg:mx-0 rounded-3xl overflow-hidden shadow-lg bg-white">
             <Gallery images={galleryImages} productName={product.name} />
           </div>
         </div>
 
-        {/* Details */}
-        <div className="w-full lg:w-[55%] flex flex-col justify-center max-h-[640px] lg:overflow-y-auto lg:pr-4 scrollbar-thin scrollbar-thumb-[#b89f56]/20">
-          
+        {/* Right Side: Details */}
+        <div className="w-full lg:w-1/2 flex flex-col justify-start pt-2 lg:pt-14">
           {/* Brand */}
-          <span className="uppercase text-[0.7rem] tracking-[0.3em] font-semibold text-[#b89f56] mb-3">
+          <span className="uppercase text-[0.75rem] tracking-[0.3em] font-bold text-[#c9a84c] mb-3">
             {product.brand}
           </span>
 
           {/* Title */}
           <h1
-            className={`${cinzel.className} text-[2.7rem] lg:text-[3.8rem] leading-tight font-semibold text-[#23221d]`}
+            className={`${cinzel.className} text-[2.2rem] sm:text-[3rem] lg:text-[3.5rem] leading-tight font-bold text-[#1a1a2e]`}
           >
             {product.name}
           </h1>
 
           {/* Price */}
           <p
-            className={`${cinzel.className} mt-3 text-[1.6rem] font-semibold text-[#3a382f] opacity-90`}
+            className={`${cinzel.className} mt-4 text-[1.8rem] font-bold text-[#1a1a2e]`}
           >
             {formatPrice(product.price)}
           </p>
 
           {/* Divider */}
-          <div className="my-6 h-px w-20 bg-[#b89f56]/40" />
+          <div className="my-8 h-px w-24 bg-[#e5e7eb]" />
 
           {/* Highlights */}
-          <div className="grid grid-cols-2 gap-x-6 gap-y-4 mb-8">
-            {highlights.slice(0, 6).map((h, idx) => (
+          <div className="grid grid-cols-2 gap-x-6 gap-y-6 mb-10">
+            {highlights.slice(0, 8).map((h, idx) => (
               <div key={idx} className="flex flex-col">
-                <span className="text-[0.65rem] uppercase tracking-widest text-[#9f946c] font-semibold">
+                <span className="text-[0.7rem] uppercase tracking-widest text-[#6b7280] font-semibold mb-1">
                   {h.label}
                 </span>
-                <span className="text-sm font-medium text-[#23221d]">
+                <span className="text-sm font-medium text-[#1a1a2e]">
                   {h.value}
                 </span>
               </div>
             ))}
           </div>
 
+          {/* Description (Optional if you want it) */}
+          {product.description && (
+            <div className="mb-10 text-sm text-[#4b5563] leading-relaxed">
+              <p className="font-semibold text-[#1a1a2e] mb-2 uppercase text-xs tracking-wider">About this watch</p>
+              <div className="whitespace-pre-line">{product.description.replace(/\*/g, '')}</div>
+            </div>
+          )}
+
           {/* CTA */}
           <div className="pt-2">
             <LuxeButtons product={product} />
           </div>
         </div>
-      </div>
+      </main>
+
+      <Footer />
     </div>
   );
 }

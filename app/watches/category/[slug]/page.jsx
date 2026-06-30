@@ -38,6 +38,8 @@ const PriceDisplay = ({ price }) => {
 export default function CategoryPage() {
   const params = useParams();
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
   const initialSlug = params?.slug || "all";
 
   const [isMounted, setIsMounted] = useState(false);
@@ -68,7 +70,6 @@ export default function CategoryPage() {
 
   const [watches, setWatches] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [page, setPage] = useState(1);
   const [limit] = useState(12);
   const [totalPages, setTotalPages] = useState(1);
   const [filtersOpen, setFiltersOpen] = useState(false);
@@ -100,14 +101,20 @@ export default function CategoryPage() {
   // Handle brand from URL query params (e.g., ?brand=Titan)
   useEffect(() => {
     const brandFromUrl = searchParams?.get("brand");
-    if (brandFromUrl && !filters.brands.includes(brandFromUrl)) {
-      setFilters((prev) => ({
-        ...prev,
-        brands: [...prev.brands, brandFromUrl],
-      }));
+    if (brandFromUrl) {
+      setFilters((prev) => {
+        if (!prev.brands.includes(brandFromUrl)) {
+          return { ...prev, brands: [...prev.brands, brandFromUrl] };
+        }
+        return prev;
+      });
+      // Remove it from the URL so it doesn't get stubbornly re-applied on every page change
+      const paramsObj = new URLSearchParams(searchParams.toString());
+      paramsObj.delete("brand");
+      router.replace(`${pathname}?${paramsObj.toString()}`, { scroll: false });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams]);
+  }, [searchParams, pathname, router]);
 
   // Save to sessionStorage whenever filters or page changes
   useEffect(() => {
@@ -146,53 +153,54 @@ export default function CategoryPage() {
       const menActive = isActive("Men", "men");
       const womenActive = isActive("Women", "women");
       const smartActive = isActive("Smartwatches", "smartwatches");
-      const wallActive = isActive("Wallclock", "wallclocks");
+      const wallActive = isActive("Wall Clocks", "wallclocks") || isActive("Wallclock", "wallclocks");
       const coupleActive = isActive("Couple", "couple");
 
       let categoriesToFetch = new Set();
 
-      // 1. Smartwatches Logic (Intersection with Gender)
-      if (smartActive) {
-        if (menActive && !womenActive) {
-          categoriesToFetch.add("smart-guys watch");
-          categoriesToFetch.add("smart-unisex watch");
-        } else if (womenActive && !menActive) {
-          categoriesToFetch.add("smart-girls watch");
-          categoriesToFetch.add("smart-unisex watch");
-        } else {
-          // All Smartwatches (if no gender or both genders)
-          categoriesToFetch.add("smart-guys watch");
-          categoriesToFetch.add("smart-girls watch");
-          categoriesToFetch.add("smart-unisex watch");
-        }
+      if (menActive) {
+        categoriesToFetch.add("Guys Watch");
+        categoriesToFetch.add("smart-guys watch");
+        categoriesToFetch.add("unisex watch");
+        categoriesToFetch.add("smart-unisex watch");
+        categoriesToFetch.add("couple watch");
       }
-
-      // 2. Wall Clock Logic
+      if (womenActive) {
+        categoriesToFetch.add("Girls Watch");
+        categoriesToFetch.add("smart-girls watch");
+        categoriesToFetch.add("unisex watch");
+        categoriesToFetch.add("smart-unisex watch");
+        categoriesToFetch.add("couple watch");
+      }
+      if (smartActive) {
+        categoriesToFetch.add("smart-guys watch");
+        categoriesToFetch.add("smart-girls watch");
+        categoriesToFetch.add("smart-unisex watch");
+        categoriesToFetch.add("smart - kids watch");
+      }
       if (wallActive) {
         categoriesToFetch.add("Wall clock");
+        categoriesToFetch.add("table clock");
       }
-
-      // 3. Standard Watch Logic (Only if NO specialized type is active)
-      // If user wants "Men" + "Smart", we only show Smart. We check !smartActive before adding standard.
-      if (!smartActive && !wallActive) {
-        if (menActive) categoriesToFetch.add("Guys Watch");
-        if (womenActive) categoriesToFetch.add("Girls Watch");
-        if (coupleActive) categoriesToFetch.add("couple watch");
+      if (coupleActive) {
+        categoriesToFetch.add("couple watch");
       }
 
       // 4. Default / Fallback Logic
       if (categoriesToFetch.size === 0) {
-        // Handle specific slugs not covered by filters (e.g., 'unisex')
+        // Handle specific slugs not covered by filters
         const categoryMap = {
-          unisex: "unisex watch",
-          all: "all",
+          unisex: ["unisex watch", "smart-unisex watch"],
+          kids: ["kids watch", "smart - kids watch"],
+          all: ["all"],
         };
         const mapped = categoryMap[currentSlug];
         if (mapped) {
-          categoriesToFetch.add(mapped);
+          mapped.forEach(cat => categoriesToFetch.add(cat));
         } else {
-          // If purely empty and not a known slug, default to 'all' or let backend handle empty query
-           if (currentSlug === 'all') categoriesToFetch.add("all");
+           if (currentSlug && currentSlug !== 'all') {
+             categoriesToFetch.add(currentSlug); 
+           }
         }
       }
 
@@ -273,7 +281,6 @@ export default function CategoryPage() {
               setFilters={setFilters}
               setPage={setPage}
               onClearAll={handleReset}
-              setPage={setPage}
             />
           </aside>
 
@@ -371,7 +378,6 @@ export default function CategoryPage() {
               setFilters={setFilters}
               setPage={setPage}
               onClearAll={handleReset}
-              setPage={setPage}
             />
           </div>
         </div>

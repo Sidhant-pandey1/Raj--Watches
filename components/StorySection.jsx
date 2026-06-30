@@ -40,10 +40,10 @@ export default function StorySection() {
   const hourMarks = Array.from({ length: 12 }, (_, i) => {
     const rad = ((i * 30 - 90) * Math.PI) / 180;
     const isQuarter = i % 3 === 0;
-    const x1 = 150 + 116 * Math.cos(rad);
-    const y1 = 150 + 116 * Math.sin(rad);
-    const x2 = 150 + 126 * Math.cos(rad);
-    const y2 = 150 + 126 * Math.sin(rad);
+    const x1 = Number((150 + 116 * Math.cos(rad)).toFixed(3));
+    const y1 = Number((150 + 116 * Math.sin(rad)).toFixed(3));
+    const x2 = Number((150 + 126 * Math.cos(rad)).toFixed(3));
+    const y2 = Number((150 + 126 * Math.sin(rad)).toFixed(3));
     return (
       <line
         key={i}

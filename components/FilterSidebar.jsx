@@ -42,7 +42,6 @@ export default function FilterSidebar({
   setFilters,
   setPage,
   onClearAll,
-  setPage,
 }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();

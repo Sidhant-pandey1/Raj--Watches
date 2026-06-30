@@ -18,7 +18,10 @@ export async function GET(request) {
     const brandsString = searchParams.get("brands");
     const sort = searchParams.get("sort");
     const searchQuery = searchParams.get("search");
+    const gendersString = searchParams.get("gender");
+
     const brands = brandsString ? brandsString.split(",") : [];
+    const genders = gendersString ? gendersString.split(",") : [];
 
     const whereClause = {};
 
@@ -30,10 +33,41 @@ export async function GET(request) {
       ];
     }
 
-    // Category filter (supports both single and multiple categories)
+    // Category processing
+    let allowedCategories = [];
     if (categories.length > 0 && !categories.includes("all")) {
+      allowedCategories = [...categories];
+    }
+
+    // Gender processing mapped to categories
+    let genderCategories = [];
+    if (genders.length > 0) {
+      if (genders.includes("Men")) {
+        genderCategories.push("guys watch", "smart-guys watch", "unisex watch", "smart-unisex watch", "couple watch");
+      }
+      if (genders.includes("Women")) {
+        genderCategories.push("girls watch", "smart-girls watch", "unisex watch", "smart-unisex watch", "couple watch");
+      }
+      if (genders.includes("Unisex")) {
+        genderCategories.push("unisex watch", "smart-unisex watch", "couple watch");
+      }
+    }
+
+    let finalCategories = [];
+    if (allowedCategories.length > 0 && genderCategories.length > 0) {
+      // Intersection
+      finalCategories = allowedCategories.filter(c => genderCategories.some(gc => gc.toLowerCase() === c.toLowerCase()));
+      if (finalCategories.length === 0) finalCategories = ["__none__"];
+    } else if (allowedCategories.length > 0) {
+      finalCategories = allowedCategories;
+    } else if (genderCategories.length > 0) {
+      finalCategories = genderCategories;
+    }
+
+    // Apply category filter
+    if (finalCategories.length > 0) {
       whereClause.category = {
-        in: categories,
+        in: finalCategories,
         mode: "insensitive",
       };
     }

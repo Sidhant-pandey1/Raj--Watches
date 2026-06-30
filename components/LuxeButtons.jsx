@@ -29,26 +29,20 @@ export default function LuxeButtons({ product }) {
   };
 
   return (
-    <div className="flex flex-col sm:flex-row gap-4 w-full">
+    <div className="flex flex-col sm:flex-row gap-3 w-full max-w-sm mt-2">
       <button
-        className="bg-[#c9a84c] text-white font-bold text-base py-3.5 px-8 rounded-lg shadow-sm hover:bg-[#a88b3a] transition-all duration-300 uppercase tracking-wider"
+        className="flex-1 bg-white text-[#1a1a2e] border border-[#e5e7eb] text-[11px] sm:text-xs font-bold py-3 px-6 rounded-md hover:border-[#c9a84c] hover:text-[#c9a84c] hover:shadow-md transition-all duration-300 uppercase tracking-[0.15em] flex items-center justify-center text-center"
         onClick={handleAddToCart}
         disabled={added}
       >
-        {added ? "Added to Cart" : "Add to Cart"}
+        {added ? "Added" : "Add to Cart"}
       </button>
       <button
         onClick={handleBuyNow}
-        className="bg-[#1a1a2e] text-white font-bold py-3.5 px-8 rounded-lg shadow-sm hover:bg-[#c9a84c] transition-all duration-300 uppercase tracking-wider flex items-center justify-center"
+        className="flex-1 bg-[#1a1a2e] text-white text-[11px] sm:text-xs font-bold py-3 px-6 rounded-md shadow hover:shadow-lg hover:-translate-y-0.5 hover:bg-[#c9a84c] transition-all duration-400 uppercase tracking-[0.15em] flex items-center justify-center text-center"
       >
         Buy Now
       </button>
-      <Link
-        href={`/watches/category/all`}
-        className="bg-white text-[#1a1a2e] border-2 border-[#e5e7eb] font-bold py-3.5 px-8 rounded-lg hover:border-[#c9a84c] hover:text-[#c9a84c] transition-all duration-300 uppercase tracking-wider flex items-center justify-center"
-      >
-        Back to Shop
-      </Link>
     </div>
   );
 }

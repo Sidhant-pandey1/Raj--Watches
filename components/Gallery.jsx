@@ -4,7 +4,9 @@ import React, { useState } from "react";
 import Image from "next/image";
 
 export default function Gallery({ images = [], productName = "Product Image" }) {
-  const [mainImage, setMainImage] = useState(images[0] || "/placeholder.jpg");
+  const displayURLs = images.length > 0 ? images : ["/placeholder.jpg"];
+  const [mainIdx, setMainIdx] = useState(0);
+  const mainImage = displayURLs[mainIdx] || "/placeholder.jpg";
 
   return (
     <div className="w-full max-w-xl mx-auto xl:ml-auto">
