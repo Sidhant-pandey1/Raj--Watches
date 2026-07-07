@@ -56,16 +56,43 @@ export default function CategoryPage() {
   const [page, setPage] = useState(1);
 
   // Load from sessionStorage post-mount to avoid hydration mismatch
+  // Also merge any ?brand= param from the URL to prevent race conditions
   useEffect(() => {
     if (typeof window !== "undefined") {
       try {
+        let restoredFilters = null;
         const savedFilters = sessionStorage.getItem(`rw-filters-${initialSlug}`);
-        if (savedFilters) setFilters(JSON.parse(savedFilters));
+        if (savedFilters) restoredFilters = JSON.parse(savedFilters);
 
-        const savedPage = sessionStorage.getItem(`rw-page-${initialSlug}`);
-        if (savedPage) setPage(parseInt(savedPage, 10) || 1);
+        // Check for brand in URL and merge it into restored filters
+        const brandFromUrl = searchParams?.get("brand");
+        if (brandFromUrl) {
+          const normalizedBrand = brandFromUrl.toLowerCase();
+          const base = restoredFilters || {
+            brands: [],
+            gender: [],
+            collections: [],
+            sortBy: "relevance",
+            price: 50000,
+          };
+          // Ensure the brand is in the list (avoid duplicates)
+          if (!base.brands.some(b => b.toLowerCase() === normalizedBrand)) {
+            base.brands = [...base.brands, normalizedBrand];
+          }
+          setFilters(base);
+          setPage(1);
+          // Remove brand from URL so it doesn't re-apply on future changes
+          const paramsObj = new URLSearchParams(searchParams.toString());
+          paramsObj.delete("brand");
+          router.replace(`${pathname}?${paramsObj.toString()}`, { scroll: false });
+        } else if (restoredFilters) {
+          setFilters(restoredFilters);
+          const savedPage = sessionStorage.getItem(`rw-page-${initialSlug}`);
+          if (savedPage) setPage(parseInt(savedPage, 10) || 1);
+        }
       } catch (e) {}
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialSlug]);
 
   const [watches, setWatches] = useState([]);
@@ -98,16 +125,20 @@ export default function CategoryPage() {
     }
   }, [page, pathname, router, searchParams]);
 
-  // Handle brand from URL query params (e.g., ?brand=Titan)
+  // Handle brand from URL query params on subsequent navigations (not initial load)
+  // Initial load is handled in the sessionStorage effect above to prevent race conditions
   useEffect(() => {
+    if (!isMounted) return;
     const brandFromUrl = searchParams?.get("brand");
     if (brandFromUrl) {
+      const normalizedBrand = brandFromUrl.toLowerCase();
       setFilters((prev) => {
-        if (!prev.brands.includes(brandFromUrl)) {
-          return { ...prev, brands: [...prev.brands, brandFromUrl] };
+        if (!prev.brands.some(b => b.toLowerCase() === normalizedBrand)) {
+          return { ...prev, brands: [...prev.brands, normalizedBrand] };
         }
         return prev;
       });
+      setPage(1);
       // Remove it from the URL so it doesn't get stubbornly re-applied on every page change
       const paramsObj = new URLSearchParams(searchParams.toString());
       paramsObj.delete("brand");
