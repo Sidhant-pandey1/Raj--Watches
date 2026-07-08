@@ -155,110 +155,116 @@ export default function CategoryPage() {
     }
   }, [filters, page, slug, isMounted]);
 
-  const fetchWatches = async () => {
-    if (!slug) return;
-    setLoading(true);
+  useEffect(() => {
+    let cancelled = false;
 
-    try {
-      const paramsObj = new URLSearchParams();
-      paramsObj.append("page", page);
-      paramsObj.append("limit", limit);
+    const doFetch = async () => {
+      if (!slug) return;
+      setLoading(true);
 
-      if (filters.price) paramsObj.append("price", filters.price);
-      if (filters.brands.length > 0)
-        paramsObj.append("brands", filters.brands.join(","));
-      if (filters.gender.length > 0)
-        paramsObj.append("gender", filters.gender.join(","));
-      if (filters.sortBy) paramsObj.append("sort", filters.sortBy);
+      try {
+        const paramsObj = new URLSearchParams();
+        paramsObj.append("page", page);
+        paramsObj.append("limit", limit);
 
-      const searchQuery = searchParams.get("search");
-      if (searchQuery) paramsObj.append("search", searchQuery);
+        if (filters.price) paramsObj.append("price", filters.price);
+        if (filters.brands.length > 0)
+          paramsObj.append("brands", filters.brands.join(","));
+        if (filters.gender.length > 0)
+          paramsObj.append("gender", filters.gender.join(","));
+        if (filters.sortBy) paramsObj.append("sort", filters.sortBy);
 
-      const selectedLabels = filters.collections;
-      const currentSlug = slug?.toLowerCase();
+        const searchQuery = searchParams.get("search");
+        if (searchQuery) paramsObj.append("search", searchQuery);
 
-      // Helper to check active state
-      const isActive = (label, slugKeys) => 
-        selectedLabels.includes(label) || (Array.isArray(slugKeys) ? slugKeys.includes(currentSlug) : currentSlug === slugKeys);
+        const selectedLabels = filters.collections;
+        const currentSlug = slug?.toLowerCase();
 
-      const menActive = isActive("Men", "men");
-      const womenActive = isActive("Women", "women");
-      const smartActive = isActive("Smartwatches", "smartwatches");
-      const wallActive = isActive("Wall Clocks", "wallclocks") || isActive("Wallclock", "wallclocks");
-      const coupleActive = isActive("Couple", "couple");
+        // Helper to check active state
+        const isActive = (label, slugKeys) => 
+          selectedLabels.includes(label) || (Array.isArray(slugKeys) ? slugKeys.includes(currentSlug) : currentSlug === slugKeys);
 
-      let categoriesToFetch = new Set();
+        const menActive = isActive("Men", "men");
+        const womenActive = isActive("Women", "women");
+        const smartActive = isActive("Smartwatches", "smartwatches");
+        const wallActive = isActive("Wall Clocks", "wallclocks") || isActive("Wallclock", "wallclocks");
+        const coupleActive = isActive("Couple", "couple");
 
-      if (menActive) {
-        categoriesToFetch.add("Guys Watch");
-        categoriesToFetch.add("smart-guys watch");
-        categoriesToFetch.add("unisex watch");
-        categoriesToFetch.add("smart-unisex watch");
-        categoriesToFetch.add("couple watch");
-      }
-      if (womenActive) {
-        categoriesToFetch.add("Girls Watch");
-        categoriesToFetch.add("smart-girls watch");
-        categoriesToFetch.add("unisex watch");
-        categoriesToFetch.add("smart-unisex watch");
-        categoriesToFetch.add("couple watch");
-      }
-      if (smartActive) {
-        categoriesToFetch.add("smart-guys watch");
-        categoriesToFetch.add("smart-girls watch");
-        categoriesToFetch.add("smart-unisex watch");
-        categoriesToFetch.add("smart - kids watch");
-      }
-      if (wallActive) {
-        categoriesToFetch.add("Wall clock");
-        categoriesToFetch.add("table clock");
-      }
-      if (coupleActive) {
-        categoriesToFetch.add("couple watch");
-      }
+        let categoriesToFetch = new Set();
 
-      // 4. Default / Fallback Logic
-      if (categoriesToFetch.size === 0) {
-        // Handle specific slugs not covered by filters
-        const categoryMap = {
-          unisex: ["unisex watch", "smart-unisex watch"],
-          kids: ["kids watch", "smart - kids watch"],
-          all: ["all"],
-        };
-        const mapped = categoryMap[currentSlug];
-        if (mapped) {
-          mapped.forEach(cat => categoriesToFetch.add(cat));
-        } else {
-           if (currentSlug && currentSlug !== 'all') {
-             categoriesToFetch.add(currentSlug); 
-           }
+        if (menActive) {
+          categoriesToFetch.add("Guys Watch");
+          categoriesToFetch.add("smart-guys watch");
+          categoriesToFetch.add("unisex watch");
+          categoriesToFetch.add("smart-unisex watch");
+          categoriesToFetch.add("couple watch");
         }
-      }
+        if (womenActive) {
+          categoriesToFetch.add("Girls Watch");
+          categoriesToFetch.add("smart-girls watch");
+          categoriesToFetch.add("unisex watch");
+          categoriesToFetch.add("smart-unisex watch");
+          categoriesToFetch.add("couple watch");
+        }
+        if (smartActive) {
+          categoriesToFetch.add("smart-guys watch");
+          categoriesToFetch.add("smart-girls watch");
+          categoriesToFetch.add("smart-unisex watch");
+          categoriesToFetch.add("smart - kids watch");
+        }
+        if (wallActive) {
+          categoriesToFetch.add("Wall clock");
+          categoriesToFetch.add("table clock");
+        }
+        if (coupleActive) {
+          categoriesToFetch.add("couple watch");
+        }
 
-      // Append to params
-      categoriesToFetch.forEach((cat) => paramsObj.append("category", cat));
+        // 4. Default / Fallback Logic
+        if (categoriesToFetch.size === 0) {
+          // Handle specific slugs not covered by filters
+          const categoryMap = {
+            unisex: ["unisex watch", "smart-unisex watch"],
+            kids: ["kids watch", "smart - kids watch"],
+            all: ["all"],
+          };
+          const mapped = categoryMap[currentSlug];
+          if (mapped) {
+            mapped.forEach(cat => categoriesToFetch.add(cat));
+          } else {
+             if (currentSlug && currentSlug !== 'all') {
+               categoriesToFetch.add(currentSlug); 
+             }
+          }
+        }
 
-      const res = await fetch(`/api/watches?${paramsObj.toString()}`);
-      const data = await res.json();
+        // Append to params
+        categoriesToFetch.forEach((cat) => paramsObj.append("category", cat));
 
-      if (data?.status === "success") {
-        setWatches(data.data || []);
-        setTotalPages(data.totalPages || 1);
-      } else {
+        const res = await fetch(`/api/watches?${paramsObj.toString()}`);
+        const data = await res.json();
+
+        if (cancelled) return;
+
+        if (data?.status === "success") {
+          setWatches(data.data || []);
+          setTotalPages(data.totalPages || 1);
+        } else {
+          setWatches([]);
+          setTotalPages(1);
+        }
+      } catch (err) {
+        if (cancelled) return;
+        console.error("Error fetching watches:", err);
         setWatches([]);
         setTotalPages(1);
+      } finally {
+        if (!cancelled) setLoading(false);
       }
-    } catch (err) {
-      console.error("Error fetching watches:", err);
-      setWatches([]);
-      setTotalPages(1);
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
 
-  useEffect(() => {
-    fetchWatches();
+    doFetch();
+    return () => { cancelled = true; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slug, page, filters, searchParams.get("search")]);
 
@@ -323,8 +329,37 @@ export default function CategoryPage() {
                 Loading watches...
               </div>
             ) : watches.length === 0 ? (
-              <div className="text-center py-16 text-[#6b7280]">
-                No products found for selected filters.
+              <div className="text-center py-16 px-4">
+                <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-[#fef3c7] mb-6">
+                  <svg className="w-10 h-10 text-[#c9a84c] animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                {filters.brands.length > 0 ? (
+                  <>
+                    <h3 className="text-xl font-semibold text-[#1a1a2e] mb-2">
+                      New Collection Coming Soon!
+                    </h3>
+                    <p className="text-[#6b7280] max-w-md mx-auto leading-relaxed">
+                      We&apos;re currently adding{" "}
+                      <span className="font-semibold text-[#c9a84c] capitalize">
+                        {filters.brands.join(", ")}
+                      </span>{" "}
+                      watches to our collection. Please bear with us — they&apos;ll be
+                      available very soon!
+                    </p>
+                    <button
+                      onClick={handleReset}
+                      className="mt-6 px-6 py-2.5 rounded-lg bg-[#1a1a2e] text-white text-sm font-semibold hover:bg-[#c9a84c] transition-colors duration-300"
+                    >
+                      Browse All Watches
+                    </button>
+                  </>
+                ) : (
+                  <p className="text-[#6b7280]">
+                    No products found for the selected filters.
+                  </p>
+                )}
               </div>
             ) : (
               <>

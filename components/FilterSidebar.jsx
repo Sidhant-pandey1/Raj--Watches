@@ -13,6 +13,11 @@ const availableBrands = [
   "sonata",
   "ajanta",
   "solar",
+  "guess",
+  "armani exchange",
+  "diesel",
+  "michael kors",
+  "ducati",
 ];
 
 const wallclockBrands = ["ajanta", "titan", "solar"];

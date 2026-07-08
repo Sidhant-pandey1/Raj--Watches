@@ -1,6 +1,8 @@
 "use client";
 
+import { useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import TestimonialSection from "../components/TestimonialSection";
@@ -28,6 +30,11 @@ const Casiologo =
 const Policelogo =
   "https://ik.imagekit.io/rajstorage2/store_frontend/Logos/police_logo.png";
 const Solarlogo = "/Solar-logo.jpeg";
+const Guesslogo = "/Logos/guess-logo.png";
+const AXlogo = "/Logos/armani-exchange-logo.png";
+const Diesellogo = "/Logos/diesel-logo.jpg";
+const MKlogo = "/Logos/michael-kors-logo.png";
+const Ducatilogo = "/Logos/ducati-logo.png";
 
 const Menswatch =
   "https://ik.imagekit.io/rajstorage2/RAJ_WATCHES_Brand_2/4Kenneth%20Cole%20%20Fossil%20Tommy%20Police/images/32-NTTH_1792112/2_32-NTTH_1792112.jpg";
@@ -37,6 +44,24 @@ const wallclock =
   "https://ik.imagekit.io/rajstorage2/RAJ_WATCHES_Brand_2/7Ajanta_images/15-2377/1_15-2377.jpg";
 
 export default function HomePage() {
+  // Clear sticky brand filters when user returns to homepage
+  // so the next brand click from "Our Top Brands" starts fresh
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      for (let i = 0; i < sessionStorage.length; i++) {
+        const key = sessionStorage.key(i);
+        if (key && key.startsWith("rw-filters-")) {
+          const saved = JSON.parse(sessionStorage.getItem(key));
+          if (saved && Array.isArray(saved.brands) && saved.brands.length > 0) {
+            saved.brands = [];
+            sessionStorage.setItem(key, JSON.stringify(saved));
+          }
+        }
+      }
+    } catch (e) {}
+  }, []);
+
   const brands = [
     { name: "tommy hilfiger", logo: Tommylogo },
     { name: "kenneth cole", logo: KennethColelogo },
@@ -46,6 +71,11 @@ export default function HomePage() {
     { name: "fastrack", logo: Fastracklogo },
     { name: "sonata", logo: Sonatalogo },
     { name: "ajanta", logo: Ajantalogo },
+    { name: "guess", logo: Guesslogo },
+    { name: "armani exchange", logo: AXlogo },
+    { name: "diesel", logo: Diesellogo },
+    { name: "michael kors", logo: MKlogo },
+    { name: "ducati", logo: Ducatilogo },
   ];
 
   return (
@@ -70,7 +100,7 @@ export default function HomePage() {
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-5 sm:gap-6">
               {brands.map((brand, idx) => (
-                <a
+                <Link
                   key={brand.logo || idx}
                   href={`/watches/category/all?brand=${encodeURIComponent(
                     brand.name
@@ -88,7 +118,7 @@ export default function HomePage() {
                       priority={false}
                     />
                   </div>
-                </a>
+                </Link>
               ))}
             </div>
           </section>

@@ -32,11 +32,11 @@ export default function HomePage() {
     const fetchWatches = async () => {
       try {
         const response = await fetch('/api/watches/popular');
-        
+
         if (!response.ok) {
           throw new Error('Failed to fetch watches');
         }
-        
+
         const data = await response.json();
         setPopularWatches(data);
       } catch (err) {
@@ -120,8 +120,8 @@ export default function HomePage() {
                       {brand.name === "Titan"
                         ? "The Premium Flagship"
                         : brand.name === "Fastrack"
-                        ? "Youthful & Sporty"
-                        : "Affordable Elegance"}
+                          ? "Youthful & Sporty"
+                          : "Affordable Elegance"}
                     </p>
                   </div>
                   <Image
@@ -142,20 +142,20 @@ export default function HomePage() {
           <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">
             Popular Products
           </h2>
-          
+
           {loading && (
             <div className="text-center py-12">
               <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
               <p className="mt-4 text-gray-600">Loading popular watches...</p>
             </div>
           )}
-          
+
           {error && (
             <div className="text-center py-12 text-red-600">
               <p>Failed to load watches. Please try again later.</p>
             </div>
           )}
-          
+
           {!loading && !error && (
             <>
               <RandomProductGrid watches={popularWatches} />
